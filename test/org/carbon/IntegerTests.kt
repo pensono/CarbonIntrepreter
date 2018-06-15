@@ -27,6 +27,7 @@ class IntegerTests {
         exprTest("1+1", CarbonInteger(2))
         exprTest("34+57", CarbonInteger(91))
         exprTest("-34+57", CarbonInteger(23))
+        exprTest("1+1+2", CarbonInteger(4))
     }
 
     @Test

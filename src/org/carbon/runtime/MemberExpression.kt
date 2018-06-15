@@ -10,7 +10,7 @@ class MemberExpression(private val base: CarbonExpression, private val memberNam
         throw UnsupportedOperationException("not implemented") // This doesn't even make sense to have.
     }
 
-    override fun eval(): CarbonExpression = base.getMember(memberName)!! // TODO error message if member is not present
+    override fun eval(): CarbonExpression = base.eval().getMember(memberName)!! // TODO error message if member is not present
 
     override fun getMember(name: String): CarbonExpression? = base.getMember(memberName)?.getMember(name)
 
