@@ -24,12 +24,7 @@ class AppliedExpression(private val base: CarbonExpression, private val actualPa
 // Might be a way this function can be generic
 fun operatorExpression(type: CarbonType, fn :(CarbonExpression) -> CarbonExpression): CarbonExpression {
     return object : CarbonExpression() {
-        override fun getMember(name: String): CarbonExpression? = null
         override var type: CarbonType = type
-
-        override fun eval(): CarbonExpression {
-            return this
-        }
 
         override fun apply(exp: CarbonExpression): CarbonExpression {
             return fn(exp)

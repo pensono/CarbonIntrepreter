@@ -5,10 +5,6 @@ package org.carbon.runtime
  * @date 6/13/2018
  */
 class CarbonInteger(val value: Int) : CarbonExpression() {
-    override fun eval(): CarbonExpression {
-        return this
-    }
-
     override fun apply(exp: CarbonExpression): CarbonExpression {
         throw UnsupportedOperationException("not implemented")
     }
@@ -17,7 +13,7 @@ class CarbonInteger(val value: Int) : CarbonExpression() {
         when(name) {
             "+" -> binaryOp(Int::plus)
             "*" -> binaryOp(Int::times)
-            else -> null
+            else -> super.getMember(name)
         }
 
     private fun binaryOp(operation: (Int, Int) -> Int) : CarbonExpression =

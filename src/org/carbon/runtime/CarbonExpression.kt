@@ -6,11 +6,11 @@ package org.carbon.runtime
  */
 abstract class CarbonExpression {
     // Members. Maybe just a lookup function since members can be obtained through the type
-    // Type
-    abstract fun getMember(name: String) : CarbonExpression?
+    // Some debate in me about making the dot operator infix...
+    open fun getMember(name: String) : CarbonExpression? = null
     abstract var type : CarbonType
 
-    abstract fun eval(): CarbonExpression
+    open fun eval(): CarbonExpression = this
     /**
      * Returns the result of applying this expression (with some reduction?)
      */

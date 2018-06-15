@@ -5,10 +5,6 @@ package org.carbon.runtime
  * @date 6/13/2018
  */
 open class CarbonType : CarbonExpression() {
-    override fun eval(): CarbonExpression {
-        throw UnsupportedOperationException("not implemented")
-    }
-
     override fun apply(exp: CarbonExpression): CarbonExpression {
         throw UnsupportedOperationException("not implemented")
     }
