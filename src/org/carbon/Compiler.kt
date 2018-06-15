@@ -56,4 +56,17 @@ class CompilerVisitor(environment: CarbonRootExpression) : CarbonParserBaseVisit
 
         return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
     }
+
+    override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
+        val base = ctx.base.accept(this)
+
+        return MemberExpression(base, ctx.identifier().text)
+    }
+
+    override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
+        val base = ctx.base.accept(this)
+        val arg = ctx.argument.accept(this) // TODO support multiple args. (How does this work in the grammar?)
+
+        return AppliedExpression(base, listOf(arg))
+    }
 }

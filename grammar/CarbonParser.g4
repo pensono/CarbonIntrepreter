@@ -18,6 +18,8 @@ statement
 expression
     : terminalExpression # Terminal
     | <infix> lhs=expression op=SYMBOL rhs=expression # InfixExpression
+    | base=expression '.' identifier # DotExpression
+    | base=expression '(' argument=expression (',' argument=expression)* ')' # ApplicationExpression
     ;
 
 terminalExpression
@@ -88,5 +90,7 @@ refinement         // What about Size == 5
 
 
 identifier
-    : LABEL ('.' LABEL)*
+    : LABEL
+    | SYMBOL
+    //: LABEL ('.' LABEL)* // Just one level?
     ;
