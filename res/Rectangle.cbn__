@@ -1,0 +1,7 @@
+// We're ignoring the fact that Width Height and Area all have different units
+
+Rectangle = {
+    Width: Integer[> 0],
+    Height: Integer[> 0],
+    Area: Integer[= Width * Height],
+}
