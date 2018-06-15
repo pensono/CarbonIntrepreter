@@ -5,12 +5,20 @@ package org.carbon.runtime
  * @date 6/13/2018
  */
 open class CarbonType : CarbonExpression() {
+    override fun eval(): CarbonExpression {
+        throw UnsupportedOperationException("not implemented")
+    }
+
+    override fun apply(exp: CarbonExpression): CarbonExpression {
+        throw UnsupportedOperationException("not implemented")
+    }
+
     companion object {
         val INSTANCE : CarbonType = CarbonType()
     }
 
     override fun getMember(name: String): CarbonExpression {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException("not implemented")
     }
 
     override var type: CarbonType = INSTANCE

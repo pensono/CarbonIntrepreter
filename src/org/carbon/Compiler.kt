@@ -5,9 +5,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
-import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonInteger
-import org.carbon.runtime.CarbonRootExpression
+import org.carbon.runtime.*
 
 /**
  * @author Ethan Shea
@@ -47,8 +45,20 @@ fun compileExpression(input: CharStream, environment: CarbonRootExpression) : Ca
 }
 
 class CompilerVisitor(environment: CarbonRootExpression) : CarbonParserBaseVisitor<CarbonExpression>() {
-    override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext?): CarbonExpression {
-        val value = ctx!!.text.toInt()
+    override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
+        val value = ctx.text.toInt()
         return CarbonInteger(value)
+    }
+
+    override fun visitExpression(ctx: CarbonParser.ExpressionContext): CarbonExpression {
+        // Is this the best way to do this, or is there some kind of antlr wizardry?
+        if (ctx.op != null) {
+            val lhs = ctx.lhs.accept(this)
+            val rhs = ctx.rhs.accept(this)
+
+            return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
+        } else {
+            return super.visitExpression(ctx)
+        }
     }
 }

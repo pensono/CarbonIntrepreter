@@ -9,4 +9,10 @@ abstract class CarbonExpression {
     // Type
     abstract fun getMember(name: String) : CarbonExpression?
     abstract var type : CarbonType
+
+    abstract fun eval(): CarbonExpression
+    /**
+     * Returns the result of applying this expression (with some reduction?)
+     */
+    abstract fun apply(exp: CarbonExpression) : CarbonExpression // May not be the best way to do this
 }

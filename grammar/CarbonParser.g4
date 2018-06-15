@@ -19,12 +19,10 @@ expression
     : typeLiteral
     | numberLiteral
     | identifier
-    | expression SYMBOL expression
+    | lhs=expression op=SYMBOL rhs=expression
     ;
 
-numberLiteral
-    : '-'? NUMBER
-    ;
+numberLiteral: '-'? NUMBER;
 
 //expression
 //    : value_expression
