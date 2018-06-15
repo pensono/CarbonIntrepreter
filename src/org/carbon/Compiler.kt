@@ -50,15 +50,10 @@ class CompilerVisitor(environment: CarbonRootExpression) : CarbonParserBaseVisit
         return CarbonInteger(value)
     }
 
-    override fun visitExpression(ctx: CarbonParser.ExpressionContext): CarbonExpression {
-        // Is this the best way to do this, or is there some kind of antlr wizardry?
-        if (ctx.op != null) {
-            val lhs = ctx.lhs.accept(this)
-            val rhs = ctx.rhs.accept(this)
+    override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): CarbonExpression {
+        val lhs = ctx.lhs.accept(this)
+        val rhs = ctx.rhs.accept(this)
 
-            return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
-        } else {
-            return super.visitExpression(ctx)
-        }
+        return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
     }
 }

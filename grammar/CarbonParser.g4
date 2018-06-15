@@ -16,10 +16,14 @@ statement
     ;
 
 expression
+    : terminalExpression # Terminal
+    | <infix> lhs=expression op=SYMBOL rhs=expression # InfixExpression
+    ;
+
+terminalExpression
     : typeLiteral
     | numberLiteral
     | identifier
-    | lhs=expression op=SYMBOL rhs=expression
     ;
 
 numberLiteral: '-'? NUMBER;
