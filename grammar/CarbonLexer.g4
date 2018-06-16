@@ -10,7 +10,6 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
     LABEL:         Letter (Letter | Digit)*;
     NUMBER:        '-'? Digit (Letter | Digit)*;
-    SYMBOL:        '+' | '-' | '*' | '/';
 //    GRAMMAR:       GrammarPart;
 
 LEFT_CURLY: '{';
@@ -26,6 +25,8 @@ EQUALS: '=';
 LEFT_SQUARE: '[';
 RIGHT_SQUARE: ']';
 MINUS: '-';
+PLUS: '+';
+TIMES: '*';
 
 // Fragment rules
 

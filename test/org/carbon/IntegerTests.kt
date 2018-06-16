@@ -37,4 +37,10 @@ class IntegerTests {
         exprTest("34.+(57)", CarbonInteger(91))
         exprTest("-34.+(57)", CarbonInteger(23))
     }
+
+    @Test
+    fun orderOfOperations() {
+        exprTest("1+2*3", CarbonInteger(7))
+        exprTest("2*3+1", CarbonInteger(7))
+    }
 }

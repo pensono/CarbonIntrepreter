@@ -27,7 +27,7 @@ fun operatorExpression(type: CarbonType, fn :(CarbonExpression) -> CarbonExpress
         override var type: CarbonType = type
 
         override fun apply(exp: CarbonExpression): CarbonExpression {
-            return fn(exp)
+            return fn(exp.eval()) // I don't think eval should be happening here
         }
     }
 }
