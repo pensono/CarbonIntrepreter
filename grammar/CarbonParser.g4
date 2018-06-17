@@ -7,7 +7,7 @@ compilationUnit
     ;
 
 typeLiteral
-    : '{' (child=parameter (',' child=parameter)* ','?) ? '}'
+    : '{' (members+=parameter (',' members+=parameter)* ','?) ? '}'
     //| enum_list
     ;
 
@@ -16,11 +16,11 @@ statement
     ;
 
 expression
-    : terminalExpression # Terminal
-    | lhs=expression op='*' rhs=expression # InfixExpression // TODO Support arbitrary operations
+    : lhs=expression op='*' rhs=expression # InfixExpression // TODO Support arbitrary operations
     | lhs=expression op=('+' | '-') rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
-    | base=expression '(' argument=expression (',' argument=expression)* ')' # ApplicationExpression
+    | base=expression '(' arguments+=expression (',' arguments+=expression)* ')' # ApplicationExpression
+    | terminalExpression # Terminal
     ;
 
 terminalExpression
@@ -49,7 +49,7 @@ numberLiteral: '-'? NUMBER;
 //    ;
 
 parameter
-    : LABEL ':' type
+    : name=LABEL ':' type
     | type
     ;
 

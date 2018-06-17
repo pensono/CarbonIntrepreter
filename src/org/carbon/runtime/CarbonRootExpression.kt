@@ -4,12 +4,8 @@ package org.carbon.runtime
  * @author Ethan Shea
  * @date 6/14/2018
  */
-class CarbonRootExpression : CarbonExpression() {
-    override fun apply(exp: CarbonExpression): CarbonExpression {
-        throw UnsupportedOperationException("not implemented")
-    }
-
-    val members: MutableMap<String, CarbonExpression> = mutableMapOf()
+class CarbonRootExpression : CarbonExpression() { // Refactor this into a CarbonScope? // Refactor this to be immutable?
+    val members: MutableMap<String, CarbonExpression> = mutableMapOf("Integer" to IntegerType)
 
     override fun getMember(name: String): CarbonExpression? = members[name]
 

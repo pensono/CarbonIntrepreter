@@ -45,7 +45,7 @@ fun compileExpression(input: CharStream, environment: CarbonRootExpression) : Ca
     return CompilerVisitor(environment).visit(expressionAst)
 }
 
-class CompilerVisitor(environment: CarbonRootExpression) : CarbonParserBaseVisitor<CarbonExpression>() {
+class CompilerVisitor(private val environment: CarbonRootExpression) : CarbonParserBaseVisitor<CarbonExpression>() {
     override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
         val value = ctx.text.toInt()
         return CarbonInteger(value)
@@ -66,8 +66,21 @@ class CompilerVisitor(environment: CarbonRootExpression) : CarbonParserBaseVisit
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
         val base = ctx.base.accept(this)
-        val arg = ctx.argument.accept(this) // TODO support multiple args. (How does this work in the grammar?)
+        val args = ctx.arguments.map { arg -> arg.accept(this) } // TODO support multiple args. (How does this work in the grammar?)
 
-        return AppliedExpression(base, listOf(arg))
+        return AppliedExpression(base, args)
+    }
+
+    override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
+        val members = ctx.members.associateBy(
+                {c -> c.name.text ?: c.type().text!!},
+                {c -> c.type().accept(this) as CarbonType}
+        )
+
+        return CarbonArbitraryType(members)
+    }
+
+    override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
+        return environment.getMember(ctx.text!!)!! // This is weak sauce. Doesn't handle errors or actually do lookups, or handle binding after the parse stage
     }
 }

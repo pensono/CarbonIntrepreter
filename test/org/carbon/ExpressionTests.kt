@@ -14,9 +14,10 @@ class ExpressionTests {
         assertEquals(CarbonInteger(3), env!!.getMember("A")!!)
     }
 
-    // Working up to this one
 //    @Test
 //    fun applicationMemberTest() {
 //        exprTest("{A:Integer}(2).A", CarbonInteger(2))
 //    }
+
+    // TODO test multiple parameters
 }

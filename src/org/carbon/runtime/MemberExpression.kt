@@ -14,5 +14,5 @@ class MemberExpression(private val base: CarbonExpression, private val memberNam
 
     override fun getMember(name: String): CarbonExpression? = base.getMember(memberName)?.getMember(name)
 
-    override var type = base.getMember(memberName)!!.type
+    override val type = base.getMember(memberName)!!.type
 }
