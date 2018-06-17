@@ -11,15 +11,15 @@ import org.carbon.runtime.*
  * @author Ethan Shea
  * @date 6/13/2018
  */
-fun compile(input: CharStream, environment: CarbonRootExpression) {
-    val parsed = parseInput(input)
+fun compile(input: CharStream, environment: CarbonRootExpression) : CarbonRootExpression? {
+    val parser = preparseInput(input)
 
-    if (parsed.numberOfSyntaxErrors > 0) {
+    if (parser.numberOfSyntaxErrors > 0) {
         println("Syntax errors!")
-        return
+        return null
     }
 
-    for (statement in parsed.compilationUnit().statement()) {
+    for (statement in parser.compilationUnit().statement()) {
         val expression = CompilerVisitor(environment).visit(statement.expression())
         if (expression == null) {
             println("Failed to compile: " + statement.text)
@@ -28,10 +28,11 @@ fun compile(input: CharStream, environment: CarbonRootExpression) {
         }
     }
 
-    println(environment.members)
+    // TODO return a modified version of the environment?
+    return environment
 }
 
-private fun parseInput(input: CharStream): CarbonParser {
+private fun preparseInput(input: CharStream): CarbonParser {
     val lexer = CarbonLexer(input)
     val tokens = CommonTokenStream(lexer)
     val parser = CarbonParser(tokens)
@@ -39,8 +40,8 @@ private fun parseInput(input: CharStream): CarbonParser {
 }
 
 fun compileExpression(input: CharStream, environment: CarbonRootExpression) : CarbonExpression? {
-    val parsed = parseInput(input)
-    val expressionAst = parsed.expression()
+    val parser = preparseInput(input)
+    val expressionAst = parser.expression()
     return CompilerVisitor(environment).visit(expressionAst)
 }
 

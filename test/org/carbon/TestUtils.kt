@@ -11,5 +11,9 @@ import org.junit.Assert
  */
 
 fun exprTest(input: String, expr: CarbonExpression) {
-    Assert.assertEquals(expr, compileExpression(CharStreams.fromString(input), CarbonRootExpression())!!.eval())
+    Assert.assertEquals(expr, testEval(input))
 }
+
+fun testEval(input: String) = compileExpression(CharStreams.fromString(input), CarbonRootExpression())!!.eval()
+
+fun testEnv(input: String) = compile(CharStreams.fromString(input), CarbonRootExpression())
