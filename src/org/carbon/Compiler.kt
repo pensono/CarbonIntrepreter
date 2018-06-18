@@ -11,7 +11,7 @@ import org.carbon.runtime.*
  * @author Ethan Shea
  * @date 6/13/2018
  */
-fun compile(input: CharStream, environment: CarbonRootExpression) : CarbonRootExpression? {
+fun compile(input: CharStream, environment: CarbonScope) : CarbonRootScope? {
     val parser = preparseInput(input)
 
     if (parser.numberOfSyntaxErrors > 0) {
@@ -39,13 +39,13 @@ private fun preparseInput(input: CharStream): CarbonParser {
     return parser
 }
 
-fun compileExpression(input: CharStream, environment: CarbonRootExpression) : CarbonExpression? {
+fun compileExpression(input: CharStream, environment: CarbonScope) : CarbonExpression? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
     return CompilerVisitor(environment).visit(expressionAst)
 }
 
-class CompilerVisitor(private val environment: CarbonRootExpression) : CarbonParserBaseVisitor<CarbonExpression>() {
+class CompilerVisitor(private val environment: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
     override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
         val value = ctx.text.toInt()
         return CarbonInteger(value)

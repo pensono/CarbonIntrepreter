@@ -2,7 +2,7 @@ package org.carbon
 
 import org.antlr.v4.runtime.CharStreams
 import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonRootExpression
+import org.carbon.runtime.CarbonRootScope
 import org.junit.Assert
 
 /**
@@ -14,6 +14,6 @@ fun exprTest(input: String, expr: CarbonExpression) {
     Assert.assertEquals(expr, testEval(input))
 }
 
-fun testEval(input: String) = compileExpression(CharStreams.fromString(input), CarbonRootExpression())!!.eval()
+fun testEval(input: String) = compileExpression(CharStreams.fromString(input), CarbonRootScope())!!.eval()
 
-fun testEnv(input: String) = compile(CharStreams.fromString(input), CarbonRootExpression())
+fun testEnv(input: String) = compile(CharStreams.fromString(input), CarbonRootScope())!!
