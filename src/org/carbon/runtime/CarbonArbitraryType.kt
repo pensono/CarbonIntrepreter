@@ -3,8 +3,18 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonArbitraryType(private val instanceMembers: Map<String, CarbonType>) : CarbonType() {
-    override fun getInstanceMember(name: String): CarbonType? = instanceMembers[name]
+class CarbonArbitraryType(private val instanceMembers: List<Pair<String, CarbonType>>) : CarbonType() { // Pair<> or Parameter?
+    // Store instance members as a less awkward type like a LinkedHashMap<>?
+    override fun getInstanceMember(name: String): CarbonType? = instanceMembers.find { p -> p.first == name }?.second
 
-    // TODO apply. Generate a new arb expression with the given parameters
+    /**
+     * Returns the result of applying this expression (with some reduction?)
+     */
+    override fun apply(actualParameters: List<CarbonExpression>): CarbonExpression {
+        // TODO proper error handling
+        assert(actualParameters.size == instanceMembers.size, {"Not the correct number of parameters. Expected: " + instanceMembers.size + " Actual: " + actualParameters.size})
+        val members = instanceMembers.zip(actualParameters) { i, p -> Pair(i.first, p)}.toMap()
+
+        return CarbonArbitraryExpression(this, members)
+    }
 }

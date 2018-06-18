@@ -16,5 +16,12 @@ open class CarbonType : CarbonExpression() {
 
     open fun getInstanceMember(name: String): CarbonType? = null
 
+    /**
+     * Returns the result of applying this expression (with some reduction?)
+     */
+    open fun apply(actualParameters: List<CarbonExpression>): CarbonExpression { // Should this be in CarbonType? or some CarbonFunction like class. CarbonAppliable?
+        TODO("not implemented")
+    }
+
     override var type: CarbonType = INSTANCE
 }

@@ -3,10 +3,6 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonArbitraryExpression(override val type: CarbonType) : CarbonExpression() {
-
-    override fun apply(exp: CarbonExpression): CarbonExpression {
-        TODO("not implemented")
-    }
-
+open class CarbonArbitraryExpression(override val type: CarbonType, private val members: Map<String, CarbonExpression>) : CarbonExpression() {
+    override fun getMember(name: String): CarbonExpression? = members[name]
 }

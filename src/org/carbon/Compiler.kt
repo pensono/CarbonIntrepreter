@@ -66,16 +66,16 @@ class CompilerVisitor(private val environment: CarbonRootExpression) : CarbonPar
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
         val base = ctx.base.accept(this)
-        val args = ctx.arguments.map { arg -> arg.accept(this) } // TODO support multiple args. (How does this work in the grammar?)
+        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
         return AppliedExpression(base, args)
     }
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
-        val members = ctx.members.associateBy(
-                {c -> c.name.text ?: c.type().text!!},
-                {c -> c.type().accept(this) as CarbonType}
-        )
+        val members = ctx.members.map{c -> Pair(
+                c.name?.text ?: c.type().text!!,
+                c.type().accept(this) as CarbonType
+        )}
 
         return CarbonArbitraryType(members)
     }

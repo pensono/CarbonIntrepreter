@@ -11,10 +11,4 @@ abstract class CarbonExpression {
     abstract val type : CarbonType
 
     open fun eval(): CarbonExpression = this
-    /**
-     * Returns the result of applying this expression (with some reduction?)
-     */
-    open fun apply(exp: CarbonExpression) : CarbonExpression { // May not be the best way to do this
-        throw UnsupportedOperationException("not implemented")
-    }
 }
