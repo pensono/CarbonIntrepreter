@@ -3,8 +3,13 @@
 Point = {
     PosX,
     PosY,
-    Name : String,
 };
+
+NamedPoint = Point : {
+    Name:String,
+};
+
+Point(Mag:Unit, Angle) = Point(cos(Angle)*Mag, sin(Angle)*Mag);
 
 //Rectangle = {
 //    Width: Integer,

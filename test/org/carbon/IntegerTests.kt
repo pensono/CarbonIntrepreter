@@ -29,15 +29,6 @@ class IntegerTests {
         exprTest("-34+57", CarbonInteger(23))
         exprTest("1+1+2", CarbonInteger(4))
     }
-
-    @Test
-    fun dotNotation() {
-        // A little strange to do it with an infix operator, but it should work anyways
-        exprTest("1.+(1)", CarbonInteger(2))
-        exprTest("34.+(57)", CarbonInteger(91))
-        exprTest("-34.+(57)", CarbonInteger(23))
-    }
-
     @Test
     fun orderOfOperations() {
         exprTest("1+2*3", CarbonInteger(7))

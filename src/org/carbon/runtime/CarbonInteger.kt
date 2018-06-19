@@ -16,7 +16,7 @@ class CarbonInteger(val value: Int) : CarbonExpression() {
         operatorExpression(IntegerType) { o -> CarbonInteger(operation((o as CarbonInteger).value, value)) }
 
 
-    override val type: CarbonType = IntegerType
+    val type: CarbonType = IntegerType
 
     override fun toString(): String = "CarbonInteger($value)"
 

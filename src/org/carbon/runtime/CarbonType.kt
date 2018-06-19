@@ -23,5 +23,5 @@ open class CarbonType : CarbonExpression() {
         TODO("not implemented")
     }
 
-    override var type: CarbonType = INSTANCE
+    open val type: CarbonType = INSTANCE
 }

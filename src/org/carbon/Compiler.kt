@@ -11,7 +11,7 @@ import org.carbon.runtime.*
  * @author Ethan Shea
  * @date 6/13/2018
  */
-fun compile(input: CharStream, environment: CarbonScope) : CarbonRootScope? {
+fun compile(input: CharStream, environment: CarbonRootScope) : CarbonRootScope? {
     val parser = preparseInput(input)
 
     if (parser.numberOfSyntaxErrors > 0) {
@@ -45,7 +45,7 @@ fun compileExpression(input: CharStream, environment: CarbonScope) : CarbonExpre
     return CompilerVisitor(environment).visit(expressionAst)
 }
 
-class CompilerVisitor(private val environment: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
+class CompilerVisitor(private val scope: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
     override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
         val value = ctx.text.toInt()
         return CarbonInteger(value)
@@ -74,13 +74,13 @@ class CompilerVisitor(private val environment: CarbonScope) : CarbonParserBaseVi
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
         val members = ctx.members.map{c -> Pair(
                 c.name?.text ?: c.type().text!!,
-                c.type().accept(this) as CarbonType
+                c.type().accept(this)
         )}
 
         return CarbonArbitraryType(members)
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
-        return environment.getMember(ctx.text!!)!! // This is weak sauce. Doesn't handle errors or actually do lookups, or handle binding after the parse stage
+        return IdentifierExpression(scope, ctx.text)
     }
 }
