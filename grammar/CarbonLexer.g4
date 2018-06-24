@@ -10,23 +10,24 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
     LABEL:         Letter (Letter | Digit)*;
     NUMBER:        '-'? Digit (Letter | Digit)*;
+
+    SYMBOL1:       '*' | '/'; // To support two levels of precedence
+    SYMBOL2:       '|' | '+' | '-';
+
 //    GRAMMAR:       GrammarPart;
 
 LEFT_CURLY: '{';
 RIGHT_CURLY: '}';
 LEFT_PAREN: '(';
 RIGHT_PAREN: ')';
-COLON: ':';
 COMMA: ',';
-PIPE: '|';
 DOT: '.';
 SEMI: ';';
 EQUALS: '=';
 LEFT_SQUARE: '[';
 RIGHT_SQUARE: ']';
+COLON: ':';
 MINUS: '-';
-PLUS: '+';
-TIMES: '*';
 
 // Fragment rules
 

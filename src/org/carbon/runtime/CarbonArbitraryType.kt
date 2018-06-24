@@ -12,6 +12,13 @@ class CarbonArbitraryType(private val instanceMembers: List<Pair<String, CarbonE
         return CarbonArbitraryType(instanceMembers.map{ p -> p.first to p.second.eval(scope)})
     }
 
+    override fun getMember(name: String): CarbonExpression? =
+        when(name) {
+            // Not sure how I want to deal with name collisions yet.
+            ":" -> OperatorExpression<CarbonArbitraryType>(CarbonType()) { o -> CarbonArbitraryType(instanceMembers + o.instanceMembers) }
+            else -> super.getMember(name)
+        }
+
     /**
      * Returns the result of applying this expression (with some reduction?)
      */

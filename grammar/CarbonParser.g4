@@ -17,8 +17,8 @@ statement
 
 expression
     : base=expression '(' arguments+=expression (',' arguments+=expression)* ')' # ApplicationExpression
-    | lhs=expression op='*' rhs=expression # InfixExpression // TODO Support arbitrary operations
-    | lhs=expression op=('+' | '-') rhs=expression # InfixExpression
+    | lhs=expression op=SYMBOL1 rhs=expression # InfixExpression
+    | lhs=expression op=(':' | SYMBOL2) rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
     | terminalExpression # Terminal
     ;
@@ -92,6 +92,6 @@ refinement         // What about Size == 5
 
 identifier
     : LABEL
-    | '*' | '-' | '+' // SYMBOL // Is this even an identifier?
+    | SYMBOL1 | SYMBOL2 // Is this even an identifier?
     //: LABEL ('.' LABEL)* // Just one level?
     ;

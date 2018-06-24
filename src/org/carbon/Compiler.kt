@@ -59,13 +59,13 @@ object ExpressionVisitor : CarbonParserBaseVisitor<CarbonExpression>() {
         val lhs = ctx.lhs.accept(ExpressionVisitor)
         val rhs = ctx.rhs.accept(ExpressionVisitor)
 
-        return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
+        return AppliedExpression(MemberExpression(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
     }
 
     override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
         val base = ctx.base.accept(ExpressionVisitor)
 
-        return MemberExpression(base, ctx.identifier().text)
+        return MemberExpression(ctx.sourceInterval, base, ctx.identifier().text)
     }
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
@@ -82,7 +82,7 @@ object ExpressionVisitor : CarbonParserBaseVisitor<CarbonExpression>() {
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
-        return IdentifierExpression(ctx.text)
+        return IdentifierExpression(ctx.sourceInterval, ctx.text)
     }
 }
 
