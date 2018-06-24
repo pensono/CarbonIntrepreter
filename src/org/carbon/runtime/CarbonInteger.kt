@@ -13,8 +13,7 @@ class CarbonInteger(val value: Int) : CarbonExpression() {
         }
 
     private fun binaryOp(operation: (Int, Int) -> Int) : CarbonExpression =
-        operatorExpression(IntegerType) { o -> CarbonInteger(operation((o as CarbonInteger).value, value)) }
-
+        OperatorExpression(IntegerType) { o -> CarbonInteger(operation((o as CarbonInteger).value, value)) }
 
     val type: CarbonType = IntegerType
 

@@ -12,14 +12,14 @@ typeLiteral
     ;
 
 statement
-    : declaration '=' expression ';'
+    : declaration ('(' parameters+=parameter (',' parameters+=parameter)* ')')? '=' expression ';'
     ;
 
 expression
-    : lhs=expression op='*' rhs=expression # InfixExpression // TODO Support arbitrary operations
+    : base=expression '(' arguments+=expression (',' arguments+=expression)* ')' # ApplicationExpression
+    | lhs=expression op='*' rhs=expression # InfixExpression // TODO Support arbitrary operations
     | lhs=expression op=('+' | '-') rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
-    | base=expression '(' arguments+=expression (',' arguments+=expression)* ')' # ApplicationExpression
     | terminalExpression # Terminal
     ;
 

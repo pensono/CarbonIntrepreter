@@ -14,6 +14,16 @@ fun exprTest(input: String, expr: CarbonExpression) {
     Assert.assertEquals(expr, testEval(input))
 }
 
-fun testEval(input: String) = compileExpression(CharStreams.fromString(input), CarbonRootScope())!!.eval()
+fun testEval(input: String) : CarbonExpression {
+    val scope = CarbonRootScope()
+    return compileExpression(CharStreams.fromString(input))!!.eval(scope)
+}
 
-fun testEnv(input: String) = compile(CharStreams.fromString(input), CarbonRootScope())!!
+fun envTest(input: String, member: String, expr: CarbonExpression) {
+    Assert.assertEquals(expr, testEnvEval(input, member))
+}
+
+fun testEnvEval(input: String, member: String) : CarbonExpression {
+    val scope = compile(CharStreams.fromString(input), CarbonRootScope())!!
+    return scope.getMember(member)!!.eval(scope)
+}

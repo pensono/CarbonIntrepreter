@@ -20,10 +20,14 @@ fun compile(input: CharStream, environment: CarbonRootScope) : CarbonRootScope? 
     }
 
     for (statement in parser.compilationUnit().statement()) {
-        val expression = CompilerVisitor(environment).visit(statement.expression())
+        var expression = ExpressionVisitor.visit(statement.expression())
         if (expression == null) {
             println("Failed to compile: " + statement.text)
         } else {
+            if (statement.parameters.size > 0) {
+                val parameterNames = toParameterList(statement.parameters!!).map {p -> p.first}
+                expression = FunctionExpression(environment, parameterNames, expression)
+            }
             environment.putMember(statement.declaration().text, expression)
         }
     }
@@ -39,48 +43,54 @@ private fun preparseInput(input: CharStream): CarbonParser {
     return parser
 }
 
-fun compileExpression(input: CharStream, environment: CarbonScope) : CarbonExpression? {
+fun compileExpression(input: CharStream) : CarbonExpression? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
-    return CompilerVisitor(environment).visit(expressionAst)
+    return ExpressionVisitor.visit(expressionAst)
 }
 
-class CompilerVisitor(private val scope: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
+object ExpressionVisitor : CarbonParserBaseVisitor<CarbonExpression>() {
     override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
         val value = ctx.text.toInt()
         return CarbonInteger(value)
     }
 
     override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): CarbonExpression {
-        val lhs = ctx.lhs.accept(this)
-        val rhs = ctx.rhs.accept(this)
+        val lhs = ctx.lhs.accept(ExpressionVisitor)
+        val rhs = ctx.rhs.accept(ExpressionVisitor)
 
         return AppliedExpression(MemberExpression(lhs, ctx.op.text), listOf(rhs))
     }
 
     override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
-        val base = ctx.base.accept(this)
+        val base = ctx.base.accept(ExpressionVisitor)
 
         return MemberExpression(base, ctx.identifier().text)
     }
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
-        val base = ctx.base.accept(this)
-        val args = ctx.arguments.map { arg -> arg.accept(this) }
+        val base = ctx.base.accept(ExpressionVisitor)
+        val args = ctx.arguments.map { arg -> arg.accept(ExpressionVisitor) }
 
         return AppliedExpression(base, args)
     }
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
-        val members = ctx.members.map{c -> Pair(
-                c.name?.text ?: c.type().text!!,
-                c.type().accept(this)
-        )}
+        val members = toParameterList(ctx.members!!)
 
         return CarbonArbitraryType(members)
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
-        return IdentifierExpression(scope, ctx.text)
+        return IdentifierExpression(ctx.text)
+    }
+}
+
+private fun toParameterList(paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, CarbonExpression>> {
+    return paramsCtx.map { c ->
+        Pair(
+                c.name?.text ?: c.type().text!!,
+                c.type().accept(ExpressionVisitor)
+        )
     }
 }

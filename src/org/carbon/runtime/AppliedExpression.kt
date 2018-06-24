@@ -8,22 +8,11 @@ class AppliedExpression(private val base: CarbonExpression, private val actualPa
     // TODO base.type - actualParameters:type
     //override var type = base.type
 
-    override fun eval(): CarbonExpression {
-        val evaluatedParameters = actualParameters.map(CarbonExpression::eval)
-        val evaluatedBase = base.eval() as CarbonType // TODO proper error handling
+    override fun eval(scope: CarbonScope): CarbonExpression {
+        val evaluatedBase = base.eval(scope) as CarbonAppliable // TODO proper error handling. for when the base can't be applied. May be this could just be made more generic so the cast isn't necessary?
+        val evaluatedParameters = actualParameters.map { e -> e.eval(scope) }
 
-        return evaluatedBase.apply(evaluatedParameters)
+        return evaluatedBase.apply(evaluatedParameters).eval(scope)
     }
 }
 
-// Might be a way this function can be generic
-fun operatorExpression(type: CarbonType, fn :(CarbonExpression) -> CarbonExpression): CarbonExpression {
-    return object : CarbonType() {
-        override val type: CarbonType = type
-
-        override fun apply(actualParameters: List<CarbonExpression>): CarbonExpression {
-            assert(actualParameters.size == 1, {"operator must accept exactly one argument"}) // TODO proper error handling
-            return fn(actualParameters[0].eval()) // I don't think eval should be happening here
-        }
-    }
-}

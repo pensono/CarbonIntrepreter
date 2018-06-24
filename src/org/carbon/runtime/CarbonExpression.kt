@@ -7,5 +7,5 @@ package org.carbon.runtime
 abstract class CarbonExpression : CarbonScope() {
     //abstract val type : CarbonType // We don't really need types yet, so ignore this for now
 
-    open fun eval(): CarbonExpression = this
+    open fun eval(scope: CarbonScope): CarbonExpression = this
 }

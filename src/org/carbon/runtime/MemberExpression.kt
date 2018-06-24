@@ -7,7 +7,7 @@ package org.carbon.runtime
 // Should this inherit from CarbonExpression, or some kind of AstNode?
 class MemberExpression(private val base: CarbonExpression, private val memberName: String) : CarbonExpression() {
 
-    override fun eval(): CarbonExpression = base.eval().getMember(memberName)!! // TODO error message if member is not present
+    override fun eval(scope: CarbonScope): CarbonExpression = base.eval(scope).getMember(memberName)!! // TODO error message if member is not present
 
     override fun getMember(name: String): CarbonExpression? = base.getMember(memberName)?.getMember(name)
 
