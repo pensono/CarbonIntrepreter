@@ -20,16 +20,8 @@ fun compile(input: CharStream, environment: CarbonRootScope) : CarbonRootScope? 
     }
 
     for (statement in parser.compilationUnit().statement()) {
-        var expression = ExpressionVisitor.visit(statement.expression())
-        if (expression == null) {
-            println("Failed to compile: " + statement.text)
-        } else {
-            if (statement.parameters.size > 0) {
-                val parameterNames = toParameterList(statement.parameters!!).map {p -> p.first}
-                expression = FunctionExpression(environment, parameterNames, expression)
-            }
-            environment.putMember(statement.declaration().text, expression)
-        }
+        val compiledStatement = visitStatement(environment, statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
+        environment.putMember(compiledStatement.first, compiledStatement.second)
     }
 
     // TODO return a modified version of the environment?
@@ -46,39 +38,40 @@ private fun preparseInput(input: CharStream): CarbonParser {
 fun compileExpression(input: CharStream) : CarbonExpression? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
-    return ExpressionVisitor.visit(expressionAst)
+    return ExpressionVisitor(CarbonRootScope()).visit(expressionAst)
 }
 
-object ExpressionVisitor : CarbonParserBaseVisitor<CarbonExpression>() {
+class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
     override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
         val value = ctx.text.toInt()
         return CarbonInteger(value)
     }
 
     override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): CarbonExpression {
-        val lhs = ctx.lhs.accept(ExpressionVisitor)
-        val rhs = ctx.rhs.accept(ExpressionVisitor)
+        val lhs = ctx.lhs.accept(this)
+        val rhs = ctx.rhs.accept(this)
 
         return AppliedExpression(MemberExpression(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
     }
 
     override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
-        val base = ctx.base.accept(ExpressionVisitor)
+        val base = ctx.base.accept(this)
 
         return MemberExpression(ctx.sourceInterval, base, ctx.identifier().text)
     }
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
-        val base = ctx.base.accept(ExpressionVisitor)
-        val args = ctx.arguments.map { arg -> arg.accept(ExpressionVisitor) }
+        val base = ctx.base.accept(this)
+        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
         return AppliedExpression(base, args)
     }
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
-        val members = toParameterList(ctx.members!!)
+        val members = toParameterList(lexicalScope, ctx.members!!)
+        val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
 
-        return CarbonArbitraryType(members)
+        return CarbonArbitraryType(lexicalScope, members, derivedMembers)
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
@@ -86,11 +79,20 @@ object ExpressionVisitor : CarbonParserBaseVisitor<CarbonExpression>() {
     }
 }
 
-private fun toParameterList(paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, CarbonExpression>> {
+private fun visitStatement(scope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, CarbonExpression>? {
+    var expression = ExpressionVisitor(scope).visit(ctx.expression()) ?: return null
+    if (ctx.parameters.size > 0) {
+        val parameterNames = toParameterList(scope, ctx.parameters!!).map {p -> p.first}
+        expression = FunctionExpression(scope, parameterNames, expression)
+    }
+    return Pair(ctx.declaration().text, expression)
+}
+
+private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, CarbonExpression>> {
     return paramsCtx.map { c ->
         Pair(
                 c.name?.text ?: c.type().text!!,
-                c.type().accept(ExpressionVisitor)
+                c.type().accept(ExpressionVisitor(scope))
         )
     }
 }

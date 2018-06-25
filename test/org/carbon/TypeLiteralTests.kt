@@ -34,4 +34,40 @@ class TypeLiteralTests {
             R = P.Z;
         """, "R", CarbonInteger(3))
     }
+
+    @Test
+    fun applicationSingleArg() {
+        exprTest("{A:Integer}(2).A", CarbonInteger(2))
+    }
+
+    @Test
+    fun applicationMultipleArg() {
+        exprTest("{A:Integer,B:Integer}(2,3).A", CarbonInteger(2))
+        exprTest("{A:Integer,B:Integer}(2,3).B", CarbonInteger(3))
+    }
+
+    @Test
+    fun derivedMember() {
+        envTest("""
+            Rectangle = {
+                Width:Integer,
+                Height:Integer,
+                Area = Width * Height,
+            };
+            R = Rectangle(3,4).Area;
+        """, "R", CarbonInteger(12))
+    }
+
+    @Test
+    fun derivedMemberUsesOuterScope() {
+        envTest("""
+            Factor = 4; // Random constant
+            Rectangle = {
+                Width:Integer,
+                Height:Integer,
+                SuperArea = Width * Height * Factor,
+            };
+            R = Rectangle(3,4).SuperArea;
+        """, "R", CarbonInteger(48))
+    }
 }

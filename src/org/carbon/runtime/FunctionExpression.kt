@@ -19,6 +19,7 @@ class AppliedFunctionExpression(private val lexicalScope: CarbonScope, private v
 }
 
 // Moving scope out of eval would prevent the need for this class
+// TODO can this be merged with Scope::+?
 private class FunctionScope(private val parameters: Map<String, CarbonExpression>, private val superScope: CarbonScope) : CarbonScope() {
     override fun getMember(name: String): CarbonExpression? {
         return parameters[name] ?: superScope.getMember(name)

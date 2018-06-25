@@ -35,29 +35,17 @@ class CompilerTests {
         exprTest("-34.+(57)", CarbonInteger(23))
     }
 
-    @Test
-    fun basicFunction() {
-        envTest("Double(Integer) = Integer * 2; R=Double(4);", "R", CarbonInteger(8))
-        envTest("Double(Integer) = Integer * 2; R=Double(4)+1;", "R", CarbonInteger(9))
-        envTest("Double(Integer) = Integer * 2; R=1+Double(4);", "R", CarbonInteger(9))
-    }
-
-    @Test
-    fun functionCallsFunction() {
-        envTest("""
-            Double(Integer) = Integer * 2;
-            Quadruple(Integer) = 2 * Double(Integer);
-            R=Quadruple(4);
-        """, "R", CarbonInteger(16))
-    }
-
-    @Test
-    fun lexicallyScoped() {
-        envTest("""
-            C = 5;
-            F(C:Integer) = C + G(C);
-            G(D:Integer) = D + C;
-            R = F(2);
-        """, "R", CarbonInteger(2+2+5)) // Will be 2 + 2 + 2 under dynamic scoping
-    }
+//    @Test
+//    fun nestedScopes() {
+//        envTest("""
+//            E = 5;
+//            A = {
+//                C = E,
+//                B = {
+//                    D = C,
+//                }
+//            };
+//            R = A().B.D;
+//        """, "R", CarbonInteger(5))
+//    }
 }

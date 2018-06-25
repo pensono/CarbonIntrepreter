@@ -3,16 +3,16 @@ parser grammar CarbonParser;
 options { tokenVocab=CarbonLexer; }
 
 compilationUnit
-    : statement*
+    : (statement ';')*
     ;
 
 typeLiteral
-    : '{' (members+=parameter (',' members+=parameter)* ','?) ? '}'
+    : '{' ((members+=parameter | derivedMembers+=statement) (',' (members+=parameter | derivedMembers+=statement))* ','?) ? '}'
     //| enum_list
     ;
 
 statement
-    : declaration ('(' parameters+=parameter (',' parameters+=parameter)* ')')? '=' expression ';'
+    : declaration ('(' parameters+=parameter (',' parameters+=parameter)* ')')? '=' expression
     ;
 
 expression

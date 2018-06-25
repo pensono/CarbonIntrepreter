@@ -11,7 +11,8 @@ class MemberExpression(private val location: Interval, private val base: CarbonE
 
     override fun eval(scope: CarbonScope): CarbonExpression {
         val evaluatedBase = base.eval(scope)
-        return evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $base", location)
+        val unevaluatedMember = evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $base", location)
+        return unevaluatedMember.eval(scope + evaluatedBase)
     }
 
     override fun getMember(name: String): CarbonExpression? = base.getMember(memberName)?.getMember(name)
