@@ -24,13 +24,13 @@ class ExpressionTests {
         """, "R", CarbonInteger(16))
     }
 
-//    @Test
-//    fun constantFunction() {
-//        envTest("""
-//            Four() = 4;
-//            R=Four();
-//        """, "R", CarbonInteger(4))
-//    }
+    @Test
+    fun noArgFunction() {
+        envTest("""
+            Four() = 4;
+            R=Four();
+        """, "R", CarbonInteger(4))
+    }
 
     @Test
     fun lexicallyScoped() {

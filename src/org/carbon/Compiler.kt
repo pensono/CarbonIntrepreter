@@ -81,7 +81,7 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
 
 private fun visitStatement(scope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, CarbonExpression>? {
     var expression = ExpressionVisitor(scope).visit(ctx.expression()) ?: return null
-    if (ctx.parameters.size > 0) {
+    if (ctx.hasParameterList != null) {
         val parameterNames = toParameterList(scope, ctx.parameters!!).map {p -> p.first}
         expression = FunctionExpression(scope, parameterNames, expression)
     }

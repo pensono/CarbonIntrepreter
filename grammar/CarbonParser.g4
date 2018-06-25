@@ -12,11 +12,13 @@ typeLiteral
     ;
 
 statement
-    : declaration ('(' parameters+=parameter (',' parameters+=parameter)* ')')? '=' expression
+    // Can this grammar rule be simplified?
+    // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
+    : declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
     ;
 
 expression
-    : base=expression '(' arguments+=expression (',' arguments+=expression)* ')' # ApplicationExpression
+    : base=expression '(' (arguments+=expression (',' arguments+=expression)*)? ')' # ApplicationExpression
     | lhs=expression op=SYMBOL1 rhs=expression # InfixExpression
     | lhs=expression op=(':' | SYMBOL2) rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
