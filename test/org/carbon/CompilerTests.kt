@@ -35,17 +35,17 @@ class CompilerTests {
         exprTest("-34.+(57)", CarbonInteger(23))
     }
 
-//    @Test
-//    fun nestedScopes() {
-//        envTest("""
-//            E = 5;
-//            A = {
-//                C = E,
-//                B = {
-//                    D = C,
-//                }
-//            };
-//            R = A().B.D;
-//        """, "R", CarbonInteger(5))
-//    }
+    @Test
+    fun nestedScopes() {
+        envTest("""
+            E = 5;
+            A = {
+                C = E,
+                B = {
+                    D = C,
+                }()
+            };
+            R = A().B.D;
+        """, "R", CarbonInteger(5))
+    }
 }

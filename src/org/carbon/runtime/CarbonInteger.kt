@@ -17,12 +17,11 @@ class CarbonInteger(val value: Int) : CarbonExpression() {
 
     val type: CarbonType = IntegerType
 
-    override fun toString(): String = "CarbonInteger($value)"
-
     override fun equals(other: Any?): Boolean = (other is CarbonInteger) && other.value == value
     override fun hashCode(): Int = value
+    override fun getShortString(): String = "CarbonInteger($value)"
 }
 
 object IntegerType : CarbonType() {
-
+    override fun getShortString(): String = "IntegerType"
 }

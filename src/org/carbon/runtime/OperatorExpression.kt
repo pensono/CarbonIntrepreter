@@ -10,4 +10,6 @@ class OperatorExpression<T: CarbonExpression>(type: CarbonType, private val fn :
         assert(actualParameters.size == 1, {"operator must accept exactly one argument"}) // TODO proper error handling
         return fn(actualParameters[0] as T)
     }
+
+    override fun getShortString(): String = "Operator Expression"
 }

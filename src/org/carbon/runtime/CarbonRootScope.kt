@@ -12,4 +12,7 @@ class CarbonRootScope : CarbonScope() {
     override fun getMember(name: String): CarbonExpression? = members[name]
 
     fun putMember(name: String, member: CarbonExpression) = members.put(name, member)
+
+    override fun getShortString(): String = "Root Scope"
+    override fun getBodyString(level: Int): String = fullString(level + 1, members)
 }

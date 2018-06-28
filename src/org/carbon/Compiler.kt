@@ -68,10 +68,21 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
     }
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
+//        val literalScope = LazyScope()
+//        val literalLexicalScope = lexicalScope + literalScope
+//
+//        val members = toParameterList(literalLexicalScope, ctx.members!!)
+//        val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(literalLexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
+//
+//        val result = CarbonArbitraryType(lexicalScope, members, derivedMembers)
+//        literalScope.target = result
+//        return result
+
         val members = toParameterList(lexicalScope, ctx.members!!)
         val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
 
-        return CarbonArbitraryType(lexicalScope, members, derivedMembers)
+        val result = CarbonArbitraryType(lexicalScope, members, derivedMembers)
+        return result
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {

@@ -14,5 +14,11 @@ class AppliedExpression(private val base: CarbonExpression, private val actualPa
 
         return evaluatedBase.apply(evaluatedParameters).eval(scope)
     }
+
+    override fun getShortString(): String = "Applied Expression."
+    override fun getBodyString(level: Int): String =
+            indented(level, "Base:") + base.getFullString(level + 1) + "\n" +
+            indented(level, "Actual Parameters:") + fullString(level + 1, actualParameters)
+
 }
 

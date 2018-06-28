@@ -3,7 +3,8 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonArbitraryType(private val lexicalScope: CarbonScope, private val instanceMembers: List<Pair<String, CarbonExpression>>, private val derivedMembers: List<Pair<String, CarbonExpression>>) : CarbonType(), CarbonAppliable { // Pair<> or Parameter?
+class CarbonArbitraryType(private val lexicalScope: CarbonScope, private val instanceMembers: List<Pair<String, CarbonExpression>>, private val derivedMembers: List<Pair<String, CarbonExpression>>) : CarbonType(), CarbonAppliable {
+    // Pair<> or Parameter?
     // Store instance members as a less awkward type like a LinkedHashMap<>?
     override fun getInstanceMember(name: String): CarbonType? =
             instanceMembers.find { p -> p.first == name }?.second as CarbonType
@@ -30,6 +31,10 @@ class CarbonArbitraryType(private val lexicalScope: CarbonScope, private val ins
         assert(actualParameters.size == instanceMembers.size, {"Not the correct number of parameters. Expected: " + instanceMembers.size + " Actual: " + actualParameters.size})
         val members = instanceMembers.zip(actualParameters) { i, p -> i.first to p}.toMap()
 
-        return CarbonArbitraryExpression(this, members + derivedMembers)
+        return CarbonArbitraryExpression(lexicalScope, this, members + derivedMembers)
     }
+
+    override fun getShortString(): String = "CarbonArbitraryType. Instance members:"
+    override fun getBodyString(level: Int): String =
+            fullString(level + 1, instanceMembers.toMap()) + fullString(level + 1, derivedMembers.toMap())
 }

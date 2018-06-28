@@ -12,4 +12,6 @@ open class CarbonType : CarbonExpression() {
     open fun getInstanceMember(name: String): CarbonType? = null
 
     open val type: CarbonType = INSTANCE
+
+    override fun getShortString(): String = "CarbonType"
 }
