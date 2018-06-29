@@ -6,6 +6,8 @@ import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
 import org.carbon.runtime.*
+import org.carbon.test.TestBaseVisitor
+import org.carbon.test.TestParser
 
 /**
  * @author Ethan Shea
@@ -51,7 +53,7 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
         val lhs = ctx.lhs.accept(this)
         val rhs = ctx.rhs.accept(this)
 
-        return AppliedExpression(MemberExpression(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
+        return AppliedExpression(ctx.sourceInterval, MemberExpression(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
     }
 
     override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
@@ -62,22 +64,27 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
         val base = ctx.base.accept(this)
-        val args = ctx.arguments.map { arg -> arg.accept(this) }
+//        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
-        return AppliedExpression(base, args)
+        // This code is kinda trash
+        val args = mutableListOf<CarbonExpression?>()
+        var i = 2 // Start after the (
+        while (i < ctx.children.size) { // end before the )
+            val child = ctx.getChild(i)
+            if (child.text == "," || child.text == ")") {
+                args.add(null)
+                i++
+            } else {
+                args.add(ctx.getChild(i).accept(this))
+                i += 2
+            }
+        }
+
+        // This code here is not very good, should be rewritten
+        return AppliedExpression(ctx.sourceInterval, base, args)
     }
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
-//        val literalScope = LazyScope()
-//        val literalLexicalScope = lexicalScope + literalScope
-//
-//        val members = toParameterList(literalLexicalScope, ctx.members!!)
-//        val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(literalLexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
-//
-//        val result = CarbonArbitraryType(lexicalScope, members, derivedMembers)
-//        literalScope.target = result
-//        return result
-
         val members = toParameterList(lexicalScope, ctx.members!!)
         val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
 

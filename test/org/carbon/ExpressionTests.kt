@@ -16,6 +16,12 @@ class ExpressionTests {
     }
 
     @Test
+    fun multipleArgFunction() {
+        envTest("Sum(A:Integer, B:Integer) = A + B; R=Sum(1,2);", "R", CarbonInteger(3))
+        envTest("Sum(A:Integer, B:Integer, C:Integer) = A + B + C; R=Sum(1,2,3);", "R", CarbonInteger(6))
+    }
+
+    @Test
     fun functionCallsFunction() {
         envTest("""
             Double(Integer) = Integer * 2;
@@ -40,5 +46,20 @@ class ExpressionTests {
             G(D:Integer) = D + C;
             R = F(2);
         """, "R", CarbonInteger(2+2+5)) // Will be 2 + 2 + 2 under dynamic scoping
+    }
+
+    @Test
+    fun partialFunctionApplication() {
+        envTest("""
+            Func(A:Integer, B:Integer) = A * B + B;
+            F = Func(2,);
+            R = F(4);
+        """, "R", CarbonInteger(2*4+4))
+
+        envTest("""
+            Func(A:Integer, B:Integer) = A * B + B;
+            F = Func(,2);
+            R = F(4);
+        """, "R", CarbonInteger(4*2+2))
     }
 }

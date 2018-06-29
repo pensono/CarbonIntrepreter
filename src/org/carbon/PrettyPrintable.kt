@@ -1,4 +1,4 @@
-package org.carbon.runtime
+package org.carbon
 
 /**
  * Mixin to allow objects to be pretty printable.
@@ -53,11 +53,8 @@ fun indent(levels: Int): String = "  ".repeat(levels)
 
 fun indented(level: Int, message: String) = indent(level) + message + "\n"
 
-fun fullString(level: Int, children: Set<PrettyPrintable>): String = fullString(level, HashSet(children))
-
-
-fun fullString(level: Int, children: List<PrettyPrintable>): String =
-        children.joinToString("\n") { p -> p.getFullString(level) }
+fun fullString(level: Int, children: Collection<PrettyPrintable?>): String =
+        children.joinToString("\n") { p -> p?.getFullString(level) ?: indent(level) + "null"}
 
 
 fun fullString(level: Int, children: Map<String, PrettyPrintable>): String {

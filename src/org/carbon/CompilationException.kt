@@ -1,4 +1,4 @@
-package org.carbon.runtime
+package org.carbon
 
 import org.antlr.v4.runtime.misc.Interval
 

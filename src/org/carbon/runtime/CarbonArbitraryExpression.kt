@@ -1,5 +1,7 @@
 package org.carbon.runtime
 
+import org.carbon.fullString
+
 /**
  * @author Ethan
  */

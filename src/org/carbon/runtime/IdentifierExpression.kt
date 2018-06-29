@@ -1,6 +1,7 @@
 package org.carbon.runtime
 
 import org.antlr.v4.runtime.misc.Interval
+import org.carbon.CompilationException
 
 /**
  * @author Ethan Shea

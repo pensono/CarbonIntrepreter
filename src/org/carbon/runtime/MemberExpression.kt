@@ -1,6 +1,7 @@
 package org.carbon.runtime
 
 import org.antlr.v4.runtime.misc.Interval
+import org.carbon.CompilationException
 
 /**
  * @author Ethan Shea
@@ -20,5 +21,5 @@ class MemberExpression(private val location: Interval, private val base: CarbonE
     //override val type = base.eval().getMember(memberName)!!.type
 
     override fun getShortString(): String = "Member Expression. Member name: $memberName. Base:"
-    override fun getBodyString(level: Int): String = base.getFullString(level + 1)
+    override fun getBodyString(level: Int): String = base.getFullString(level)
 }

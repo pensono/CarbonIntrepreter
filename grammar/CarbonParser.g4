@@ -18,7 +18,7 @@ statement
     ;
 
 expression
-    : base=expression '(' (arguments+=expression (',' arguments+=expression)*)? ')' # ApplicationExpression
+    : base=expression '(' (arguments+=expression? (',' arguments+=expression?)*)? ')' # ApplicationExpression
     | lhs=expression op=SYMBOL1 rhs=expression # InfixExpression
     | lhs=expression op=(':' | SYMBOL2) rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
