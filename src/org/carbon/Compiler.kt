@@ -66,19 +66,15 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
         val base = ctx.base.accept(this)
 //        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
-        // This code is kinda trash
+        // Kinda trash, but it's the best I can do
+        // https://stackoverflow.com/questions/51074953/antlr-parse-with-missing-elements
         val args = mutableListOf<CarbonExpression?>()
-        var i = 2 // Start after the (
-        while (i < ctx.children.size) { // end before the )
-            val child = ctx.getChild(i)
-            if (child.text == "," || child.text == ")") {
-                args.add(null)
-                i++
-            } else {
-                args.add(ctx.getChild(i).accept(this))
-                i += 2
-            }
+        if (ctx.first_argument != null) {
+            args.add(ctx.first_argument.accept(this))
+        } else if (ctx.other_arguments.isNotEmpty()){
+            args.add(null)
         }
+        ctx.other_arguments.forEach { a -> args.add(a?.accept(this)) }
 
         // This code here is not very good, should be rewritten
         return AppliedExpression(ctx.sourceInterval, base, args)
