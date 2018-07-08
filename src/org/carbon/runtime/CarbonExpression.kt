@@ -3,13 +3,16 @@ package org.carbon.runtime
 import org.carbon.PrettyPrintable
 
 /**
- * @author Ethan Shea
- * @date 6/13/2018
+ * @author Ethan
  */
-abstract class CarbonExpression : CarbonScope(), PrettyPrintable {
-    //abstract val type : CarbonType // We don't really need types yet, so ignore this for now
+abstract class CarbonExpression: PrettyPrintable, CarbonScope() {
+    open fun apply(arguments: List<CarbonExpression>) : CarbonExpression = this // Weak sauce implementation
 
-    open fun eval(scope: CarbonScope): CarbonExpression = this
+    // TODO change name to avoid conflicting with Node::eval_reduce
+    open fun eval_reduce(scope: CarbonScope) = this // Good default?
 
-    override fun toString() = getFullString()
+    // Set member?
+
+    override fun getShortString(): String = "Carbon Expression"
+    override fun toString(): String = getFullString()
 }

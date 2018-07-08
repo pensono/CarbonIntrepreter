@@ -1,0 +1,8 @@
+
+Compile(String) = ExpressionVisitor.Visit(ExpressionContext)
+    where
+    CarbonParser = Parse("CarbonExpression.g",)
+    ExpressionContext = CarbonParser(String)
+    ExpressionVisitor = CarbonParser.Visitor : {
+
+    }

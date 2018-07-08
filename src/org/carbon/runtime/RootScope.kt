@@ -1,6 +1,7 @@
 package org.carbon.runtime
 
 import org.carbon.fullString
+import org.carbon.syntax.Node
 
 /**
  * @author Ethan Shea
@@ -8,10 +9,8 @@ import org.carbon.fullString
  */
 // Refactor this into a CarbonScope?
 // Refactor this to be immutable? It can also be an object if its immutable
-class CarbonRootScope : CarbonScope() {
-    val members: MutableMap<String, CarbonExpression> = mutableMapOf("Integer" to IntegerType)
-
-    override fun getMember(name: String): CarbonExpression? = members[name]
+class RootScope : CarbonScope() {
+    override val members: MutableMap<String, CarbonExpression> = mutableMapOf("Integer" to IntegerType)
 
     fun putMember(name: String, member: CarbonExpression) = members.put(name, member)
 

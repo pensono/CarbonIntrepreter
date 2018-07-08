@@ -1,7 +1,6 @@
 package org.carbon
 
 import org.carbon.runtime.CarbonInteger
-import org.junit.Assert
 import org.junit.Test
 
 /**
@@ -14,7 +13,7 @@ class CompilerTests {
     }
 
     @Test
-    fun identifierOperator() {
+    fun basicDerivedVariable() {
         envTest("A=3;B=A+2;", "B", CarbonInteger(5))
     }
 
@@ -47,5 +46,10 @@ class CompilerTests {
             };
             R = A().B.D;
         """, "R", CarbonInteger(5))
+    }
+
+    @Test(expected = CompilationException::class)
+    fun badImplicitlyNamedArgFails() {
+        testEval("F(NotAType) = NotAType; F(2)")
     }
 }

@@ -1,15 +1,28 @@
 package org.carbon.runtime
 
+import org.carbon.CarbonException
+
 /**
  * @author Ethan
  */
-class OperatorExpression<T: CarbonExpression>(type: CarbonType, private val fn :(T) -> T): CarbonExpression(), CarbonAppliable {
-    val type: CarbonType = type
+class OperatorExpression<out CE: CarbonExpression, T>(
+        val base: CE,
+        val operatorName : String,
+        private val unwrapper: (CE) -> T,
+        private val wrapper: (T) -> CE,
+        private val operator: (T, T) -> T
+    ) : CarbonExpression() {
+    //override val formalParameters: List<String> = listOf()
+    override val members: Map<String, CarbonExpression>
+        get() = TODO("not implemented")
 
-    override fun apply(actualParameters: List<CarbonExpression>): CarbonExpression {
-        assert(actualParameters.size == 1, {"operator must accept exactly one argument"}) // TODO proper error handling
-        return fn(actualParameters[0] as T)
+    override fun apply(arguments: List<CarbonExpression>): CarbonExpression {
+        val wrappedLhs = arguments[0] as? CE ?: throw CarbonException("Parameter does not have the correct underlying type")
+        val lhs = unwrapper(wrappedLhs)
+        val rhs = unwrapper(base)
+
+        return wrapper(operator(rhs, lhs))
     }
 
-    override fun getShortString(): String = "Operator Expression"
+    override fun getShortString(): String = "Operator $operatorName"
 }

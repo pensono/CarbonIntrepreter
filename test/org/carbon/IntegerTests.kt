@@ -12,7 +12,7 @@ import org.junit.Assert.*
  */
 class IntegerTests {
     @Test
-    fun numerals() {
+    fun literals() {
         exprTest("1", CarbonInteger(1))
         exprTest("34", CarbonInteger(34))
         exprTest("137", CarbonInteger(137))
@@ -21,6 +21,16 @@ class IntegerTests {
         exprTest("-137", CarbonInteger(-137))
         // TODO Decimal numbers
     }
+
+    @Test
+    fun expression() {
+        exprTest("Integer(1)", CarbonInteger(1))
+        envTest("""
+            I = 3;
+            R = Integer(I);
+        """, "R", CarbonInteger(3))
+    }
+
 
     @Test
     fun infixOperators() {

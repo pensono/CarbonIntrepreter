@@ -6,14 +6,13 @@ import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
 import org.carbon.runtime.*
-import org.carbon.test.TestBaseVisitor
-import org.carbon.test.TestParser
+import org.carbon.syntax.*
 
 /**
  * @author Ethan Shea
  * @date 6/13/2018
  */
-fun compile(input: CharStream, environment: CarbonRootScope) : CarbonRootScope? {
+fun compile(input: CharStream, environment: RootScope) : RootScope? {
     val parser = preparseInput(input)
 
     if (parser.numberOfSyntaxErrors > 0) {
@@ -37,38 +36,38 @@ private fun preparseInput(input: CharStream): CarbonParser {
     return parser
 }
 
-fun compileExpression(input: CharStream) : CarbonExpression? {
+fun compileExpression(input: CharStream) : Node? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
-    return ExpressionVisitor(CarbonRootScope()).visit(expressionAst)
+    return NodeVisitor(RootScope()).visit(expressionAst)
 }
 
-class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<CarbonExpression>() {
-    override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): CarbonExpression {
+class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>() {
+    override fun visitNumberLiteral(ctx: CarbonParser.NumberLiteralContext): Node {
         val value = ctx.text.toInt()
-        return CarbonInteger(value)
+        return IntegerNode(value)
     }
 
-    override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): CarbonExpression {
+    override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): Node {
         val lhs = ctx.lhs.accept(this)
         val rhs = ctx.rhs.accept(this)
 
-        return AppliedExpression(ctx.sourceInterval, MemberExpression(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
+        return AppliedNode(ctx.sourceInterval, MemberNode(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
     }
 
-    override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): CarbonExpression {
+    override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): Node {
         val base = ctx.base.accept(this)
 
-        return MemberExpression(ctx.sourceInterval, base, ctx.identifier().text)
+        return MemberNode(ctx.sourceInterval, base, ctx.identifier().text)
     }
 
-    override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): CarbonExpression {
+    override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): Node {
         val base = ctx.base.accept(this)
 //        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
         // Kinda trash, but it's the best I can do
         // https://stackoverflow.com/questions/51074953/antlr-parse-with-missing-elements
-        val args = mutableListOf<CarbonExpression?>()
+        val args = mutableListOf<Node?>()
         if (ctx.first_argument != null) {
             args.add(ctx.first_argument.accept(this))
         } else if (ctx.other_arguments.isNotEmpty()){
@@ -77,36 +76,40 @@ class ExpressionVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor
         ctx.other_arguments.forEach { a -> args.add(a?.accept(this)) }
 
         // This code here is not very good, should be rewritten
-        return AppliedExpression(ctx.sourceInterval, base, args)
+        return AppliedNode(ctx.sourceInterval, base, args)
     }
 
-    override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): CarbonExpression {
+    override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): Node {
         val members = toParameterList(lexicalScope, ctx.members!!)
-        val derivedMembers = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
+        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
+        // Visit statement always returns with no actual parameters... is this a larger design issue?
+        val derivedMembers = derivedMemberExpressions.map { p -> Pair(p.first, p.second.body) }
 
-        val result = CarbonArbitraryType(lexicalScope, members, derivedMembers)
+        val result = ArbitraryTypeNode(lexicalScope, members, derivedMembers)
         return result
     }
 
-    override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): CarbonExpression {
-        return IdentifierExpression(ctx.sourceInterval, ctx.text)
+    override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): Node {
+        return IdentifierNode(ctx.sourceInterval, ctx.text)
     }
 }
 
-private fun visitStatement(scope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, CarbonExpression>? {
-    var expression = ExpressionVisitor(scope).visit(ctx.expression()) ?: return null
-    if (ctx.hasParameterList != null) {
-        val parameterNames = toParameterList(scope, ctx.parameters!!).map {p -> p.first}
-        expression = FunctionExpression(scope, parameterNames, expression)
+// Should this return a CarbonExpression and not an ArbitraryExpression?
+private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, ArbitraryExpression>? {
+    val  body = NodeVisitor(lexicalScope).visit(ctx.expression()) ?: return null
+    val parameterNames = if (ctx.hasParameterList != null) {
+        toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first}
+    } else {
+        listOf()
     }
-    return Pair(ctx.declaration().text, expression)
+    return Pair(ctx.declaration().text, ArbitraryExpression(lexicalScope, body, parameterNames))
 }
 
-private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, CarbonExpression>> {
+private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, Node>> {
     return paramsCtx.map { c ->
         Pair(
                 c.name?.text ?: c.type().text!!,
-                c.type().accept(ExpressionVisitor(scope))
+                c.type().accept(NodeVisitor(scope))
         )
     }
 }
