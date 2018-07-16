@@ -81,12 +81,11 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): Node {
         val members = toParameterList(lexicalScope, ctx.members!!)
-        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
+        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull().toMap() // Is this the right way to deal with nulls?
         // Visit statement always returns with no actual parameters... is this a larger design issue?
-        val derivedMembers = derivedMemberExpressions.map { p -> Pair(p.first, p.second.body) }
+        val derivedMembers = derivedMemberExpressions.mapValues { e -> e.value.body }
 
-        val result = ArbitraryTypeNode(lexicalScope, members, derivedMembers)
-        return result
+        return ArbitraryTypeNode(members, derivedMembers)
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): Node {

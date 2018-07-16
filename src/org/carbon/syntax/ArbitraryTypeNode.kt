@@ -7,16 +7,15 @@ import org.carbon.runtime.*
  * @author Ethan
  */
 class ArbitraryTypeNode(
-        private val lexicalScope: CarbonScope,
         private val instanceMembers: List<Pair<String, Node>>, // Name to type
-        private val derivedMembers: List<Pair<String, Node>> // Name to body
+        private val derivedMembers: Map<String, Node> // Name to body
     ) : Node(), CarbonAppliable {
 
     override fun link(scope: CarbonScope): CarbonExpression {
         // Is this scope correct?
         val parameterNames = instanceMembers.map { p -> p.first }
 
-        return CompositeExpression(lexicalScope, mapOf(), derivedMembers.toMap(), parameterNames)
+        return CompositeExpression(scope, mapOf(), derivedMembers, parameterNames)
 
 //        val newExpressionScope = LazyScope() // If there's a way to do this without the lazy scope, I'm all ears
 //        val newDerivedMembers = derivedMembers.map{
