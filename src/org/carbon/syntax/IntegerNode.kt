@@ -9,7 +9,7 @@ import org.carbon.runtime.CarbonScope
  * @date 6/13/2018
  */
 class IntegerNode(val value: Int) : Node() {
-    override fun eval(scope: CarbonScope): CarbonExpression = CarbonInteger(value)
+    override fun link(scope: CarbonScope): CarbonExpression = CarbonInteger(value)
 
 //    override fun lookupName(memberName: String): CarbonExpression? =
 //        when(memberName) {

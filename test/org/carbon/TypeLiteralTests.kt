@@ -33,6 +33,8 @@ class TypeLiteralTests {
         """, "R", CarbonInteger(3))
     }
 
+    // TODO test squash between Integer and an arbitrary type
+
     @Test
     fun applicationSingleArg() {
         exprTest("{A:Integer}(2).A", CarbonInteger(2))
@@ -68,4 +70,6 @@ class TypeLiteralTests {
             R = Rectangle(3,4).SuperArea;
         """, "R", CarbonInteger(48))
     }
+
+    // TODO check names being used twice
 }

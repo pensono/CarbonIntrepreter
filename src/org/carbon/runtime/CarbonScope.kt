@@ -9,9 +9,10 @@ import org.carbon.syntax.Node
  */
 abstract class CarbonScope: PrettyPrintable {
     // Some debate in me about making the dot operator infix...
-    open fun lookupName(name: String): CarbonExpression? = members[name]
+    open fun lookupName(name: String): CarbonExpression? = getMember(name)
     // Turn this into a map?
-    open val members : Map<String, CarbonExpression> = mapOf()
+    open fun getMember(name: String): CarbonExpression? = null
+    //open val members : Map<String, CarbonExpression> = mapOf()
 
     /**
      * Not commutative

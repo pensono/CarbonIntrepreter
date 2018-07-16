@@ -6,10 +6,14 @@ import org.carbon.PrettyPrintable
  * @author Ethan
  */
 abstract class CarbonExpression: PrettyPrintable, CarbonScope() {
-    open fun apply(arguments: List<CarbonExpression>) : CarbonExpression = this // Weak sauce implementation
+    /**
+     * A null element signifies a parameter that was omitted. If any parameters are omitted, then a function
+     * which takes the omitted parameters should be returned.
+     */
+    // TODO this logic of parameter omission should be consolidated to one location, rather than pushed upon the child classes
+    open fun apply(arguments: List<CarbonExpression?>) : CarbonExpression = this // Weak sauce implementation
 
-    // TODO change name to avoid conflicting with Node::eval_reduce
-    open fun eval_reduce(scope: CarbonScope) = this // Good default?
+    open fun reduce() = this // Good default?
 
     // Set member?
 

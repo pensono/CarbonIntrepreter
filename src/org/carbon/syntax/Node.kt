@@ -10,7 +10,7 @@ import org.carbon.runtime.CarbonScope
  * @date 6/13/2018
  */
 abstract class Node: PrettyPrintable {
-    abstract fun eval(scope: CarbonScope): CarbonExpression
+    abstract fun link(scope: CarbonScope): CarbonExpression
 
     override fun toString() = getFullString()
 }

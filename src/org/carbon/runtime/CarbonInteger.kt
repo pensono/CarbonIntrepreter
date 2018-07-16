@@ -8,13 +8,15 @@ import org.carbon.CompilationException
 class CarbonInteger(var value: Int) : CarbonExpression() {
     override fun getShortString(): String = "CarbonInteger($value)"
 
-    override fun apply(arguments: List<CarbonExpression>): CarbonExpression {
-        TODO("not implemented")
+    override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
+        assert(arguments.isEmpty())
+        return this
     }
 
 //    override val formalParameters: List<String>
 //        get() = TODO("not implemented")
-    override val members: Map<String, CarbonExpression> = mapOf(
+    override fun getMember(name: String) = members[name]
+    val members: Map<String, CarbonExpression> = mapOf(
             "+" to integerMagma("+", Int::plus),
             "*" to integerMagma("*", Int::times)
     )
@@ -30,7 +32,7 @@ class CarbonInteger(var value: Int) : CarbonExpression() {
 object IntegerType : CarbonExpression() {
     override fun getShortString(): String = "Integer Type"
 
-    override fun apply(arguments: List<CarbonExpression>): CarbonExpression {
+    override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
 //        if (arguments.size != 1) // TODO something more robust (maybe a type system?)
 //            throw CompilationException("Not the correct number of arguments for creating an int")
 

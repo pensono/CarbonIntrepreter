@@ -1,15 +1,35 @@
 package org.carbon.syntax
 
 import org.carbon.fullString
-import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonScope
+import org.carbon.runtime.*
 
 /**
  * @author Ethan
  */
-class ArbitraryTypeNode(private val lexicalScope: CarbonScope, private val instanceMembers: List<Pair<String, Node>>, private val derivedMembers: List<Pair<String, Node>>) : Node(), CarbonAppliable {
-    override fun eval(scope: CarbonScope): CarbonExpression {
-        TODO("not implemented")
+class ArbitraryTypeNode(
+        private val lexicalScope: CarbonScope,
+        private val instanceMembers: List<Pair<String, Node>>, // Name to type
+        private val derivedMembers: List<Pair<String, Node>> // Name to body
+    ) : Node(), CarbonAppliable {
+
+    override fun link(scope: CarbonScope): CarbonExpression {
+        // Is this scope correct?
+        val parameterNames = instanceMembers.map { p -> p.first }
+
+        return CompositeExpression(lexicalScope, mapOf(), derivedMembers.toMap(), parameterNames)
+
+//        val newExpressionScope = LazyScope() // If there's a way to do this without the lazy scope, I'm all ears
+//        val newDerivedMembers = derivedMembers.map{
+//            m -> Pair(m.first, ScalarExpression(lexicalScope + newExpressionScope, m.second))
+//        }.toMap()
+//
+//        val expression = CompositeExpression(lexicalScope, newDerivedMembers, parameterNames)
+//        newExpressionScope.target = expression
+//        return expression
+
+        //return ScalarExpression(scope, body, parameterNames)
+
+//        return ArbitraryType(lexicalScope, instanceMembers, derivedMembers)
     }
 
     // Pair<> or Parameter?
@@ -40,7 +60,7 @@ class ArbitraryTypeNode(private val lexicalScope: CarbonScope, private val insta
 //        assert(actualParameters.size == instanceMembers.size, {"Not the correct number of parameters. Expected: " + instanceMembers.size + " Actual: " + actualParameters.size})
 //        val members = instanceMembers.zip(actualParameters) { i, p -> i.first to p}.toMap()
 //
-//        return ArbitraryNode(lexicalScope, this, members + derivedMembers)
+//        return CompositeNode(lexicalScope, this, members + derivedMembers)
 //    }
 
     override fun getShortString(): String = "ArbitraryTypeNode. Instance members:"

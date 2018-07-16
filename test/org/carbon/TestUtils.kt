@@ -17,7 +17,7 @@ fun exprTest(input: String, expected: CarbonExpression) {
 
 fun testEval(input: String) : CarbonExpression {
     val scope = RootScope()
-    return compileExpression(CharStreams.fromString(input))!!.eval(scope).eval_reduce(scope) // TODO two evals... something's wrong here...
+    return compileExpression(CharStreams.fromString(input))!!.link(scope).reduce()
 }
 
 fun envTest(input: String, member: String, expected: CarbonExpression) {
@@ -26,5 +26,5 @@ fun envTest(input: String, member: String, expected: CarbonExpression) {
 
 fun testEnvEval(input: String, member: String) : CarbonExpression {
     val scope = compile(CharStreams.fromString(input), RootScope())!!
-    return scope.lookupName(member)!!.eval_reduce(scope)
+    return scope.lookupName(member)!!.reduce()
 }

@@ -94,15 +94,15 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
     }
 }
 
-// Should this return a CarbonExpression and not an ArbitraryExpression?
-private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, ArbitraryExpression>? {
+// Should this return a CarbonExpression and not an ScalarExpression?
+private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, ScalarExpression>? {
     val  body = NodeVisitor(lexicalScope).visit(ctx.expression()) ?: return null
     val parameterNames = if (ctx.hasParameterList != null) {
         toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first}
     } else {
         listOf()
     }
-    return Pair(ctx.declaration().text, ArbitraryExpression(lexicalScope, body, parameterNames))
+    return Pair(ctx.declaration().text, ScalarExpression(lexicalScope, body, parameterNames))
 }
 
 private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, Node>> {
