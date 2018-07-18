@@ -16,12 +16,6 @@ class MemberNode(private val location: Interval, private val base: Node, private
         return evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $evaluatedBase", location)
     }
 
-    // TODO is this ever used?
-    //override fun lookupName(name: String): CarbonExpression? = base.lookupName(memberName)?.lookupName(name)
-
-    // We don't needs types yet, so just ignore this
-    //override val type = base.link().lookupName(memberName)!!.type
-
     override fun getShortString(): String = "Member Expression. Member name: $memberName. Base:"
     override fun getBodyString(level: Int): String = base.getFullString(level)
 }

@@ -87,8 +87,6 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         // Visit statement always returns with no actual parameters... is this a larger design issue?
         val derivedMembers = derivedMemberExpressions.toMap().mapValues { e -> e.value.body!! }
 
-        // Does ArbitraryTypeNode need to know the names of the parameters again?
-        //return FunctionNode(derivedMemberExpressions.map { e -> e.first }, ArbitraryTypeNode(members, derivedMembers))
         return ArbitraryTypeNode(members, derivedMembers)
     }
 
