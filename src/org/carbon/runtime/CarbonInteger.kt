@@ -1,33 +1,30 @@
 package org.carbon.runtime
 
-import org.carbon.CompilationException
-
 /**
  * @author Ethan
  */
-class CarbonInteger(var value: Int) : CarbonExpression() {
+class CarbonInteger(var value: Int) : CarbonExpression(operatorCallback = ::generateOperators) {
     override fun getShortString(): String = "CarbonInteger($value)"
 
+    // Can this override be removed?
     override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
         assert(arguments.isEmpty())
         return this
     }
 
-//    override val formalParameters: List<String>
-//        get() = TODO("not implemented")
-    override fun getMember(name: String) = members[name]
-    val members: Map<String, CarbonExpression> = mapOf(
-            "+" to integerMagma("+", Int::plus),
-            "*" to integerMagma("*", Int::times)
-    )
-
-    private fun integerMagma(opName: String, operation :(Int, Int) -> Int) =
-        OperatorExpression(this, opName, operation, ::CarbonInteger, CarbonInteger::value)
-
     // Mostly here for tests
     override fun equals(other: Any?): Boolean = (other is CarbonInteger) && other.value == value
     override fun hashCode(): Int = value
 }
+
+
+private fun generateOperators(expr: CarbonExpression) = mapOf(
+        "+" to integerMagma(expr as CarbonInteger, "+", Int::plus), // Is there a way to remove the cast?
+        "*" to integerMagma(expr as CarbonInteger, "*", Int::times)
+)
+
+private fun integerMagma(base: CarbonInteger, opName: String, operation: (Int, Int) -> Int) =
+        OperatorExpression(base, opName, operation, ::CarbonInteger, CarbonInteger::value)
 
 object IntegerType : CarbonExpression() {
     override fun getShortString(): String = "Integer Type"

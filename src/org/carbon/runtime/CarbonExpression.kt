@@ -1,22 +1,53 @@
 package org.carbon.runtime
 
 import org.carbon.PrettyPrintable
+import org.carbon.syntax.Node
 
 /**
  * @author Ethan
  */
-abstract class CarbonExpression: PrettyPrintable, CarbonScope() {
-    /**
-     * A null element signifies a parameter that was omitted. If any parameters are omitted, then a function
-     * which takes the omitted parameters should be returned.
-     */
-    // TODO this logic of parameter omission should be consolidated to one location, rather than pushed upon the child classes
-    open fun apply(arguments: List<CarbonExpression?>) : CarbonExpression = this // Weak sauce implementation
+open class CarbonExpression(
+    val lexicalScope: CarbonScope? = null, // Should this be required?
+    val body: Node? = null, // Not sure if this is the best type, but we'll stick with it for now
+    val derivedMembers: Map<String, Node> = mapOf(),
+    val actualParameters: Map<String, CarbonExpression> = mapOf(),
+    val formalParameters: List<String> = listOf<String>(),
+    operatorCallback: (CarbonExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
+    ) : PrettyPrintable, CarbonScope() {
 
-    open fun eval() = this // Good default?
+        val members = actualParameters + operatorCallback(this)
 
-    // Set member?
+        // I don't think link should happen here
+        override fun getMember(name: String): CarbonExpression? = members[name] ?: derivedMembers[name]?.link(this)
 
+
+        /**
+         * A null element signifies a parameter that was omitted. If any parameters are omitted, then a function
+         * which takes the omitted parameters should be returned.
+         */
+        open fun apply(arguments: List<CarbonExpression?>) : CarbonExpression {
+            assert(arguments.size == formalParameters.size) // You can't leave out parameters. Plus(4) does not compile, Plus(4,) does
+
+            val nameMapping = formalParameters.zip(arguments)
+            val newFormalParameters = nameMapping.filter { p -> p.second == null }
+                    .map { p -> p.first }
+            val newMembers = nameMapping.toMap().filterValues { n -> n != null }
+                    .mapValues { e -> e.value as CarbonExpression } + members // Cast needed to get the type system to recognize that nulls were filtered out.
+
+            // Eval when no formal parameters?
+            return CarbonExpression(lexicalScope, body, derivedMembers, newMembers, newFormalParameters)
+        }
+
+        open fun eval() : CarbonExpression =
+                if (formalParameters.isEmpty() && body != null) {
+                    body.link(this).eval() // It's weird how this line also appears in apply
+                } else {
+                    this // Basically don't evaluate until fully applied
+                }
+
+        // TODO check for collisions between actualParameters and derivedMembers, or assert that keys are unique
+        override fun lookupName(name: String): CarbonExpression? =
+                getMember(name) ?: lexicalScope?.lookupName(name)
     override fun getShortString(): String = "Carbon Expression"
     override fun toString(): String = getFullString()
 }

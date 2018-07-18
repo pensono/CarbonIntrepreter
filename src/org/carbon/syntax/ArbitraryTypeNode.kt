@@ -15,10 +15,10 @@ class ArbitraryTypeNode(
         // Is this scope correct?
         val parameterNames = instanceMembers.map { p -> p.first }
 
-        return CompositeExpression(scope, null, derivedMembers, formalParameters = parameterNames, operatorCallback = { expr ->
+        return CarbonExpression(scope, null, derivedMembers, formalParameters = parameterNames, operatorCallback = { expr ->
             mapOf(":" to OperatorExpression(expr, "squash",
                     { lhs, rhs ->
-                        CompositeExpression(
+                        CarbonExpression(
                                 scope,
                                 null, // What should body be?
                                 lhs.derivedMembers + rhs.derivedMembers,

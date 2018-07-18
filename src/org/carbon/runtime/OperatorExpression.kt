@@ -12,9 +12,11 @@ class OperatorExpression<out CE: CarbonExpression, T>(
         private val operator: (T, T) -> T,
         private val wrapper: (T) -> CE,
         private val unwrapper: (CE) -> T
-    ) : CarbonExpression() {
+    ) : CarbonExpression(formalParameters = listOf("lhs")) {
 
     override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
+        assert(arguments.size == 1)
+
         val wrappedLhs = arguments[0] as? CE ?: throw CarbonException("Parameter does not have the correct underlying type")
         val lhs = unwrapper(wrappedLhs)
         val rhs = unwrapper(base)

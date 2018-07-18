@@ -1,6 +1,5 @@
 package org.carbon.syntax
 
-import org.carbon.CarbonException
 import org.carbon.PrettyPrintable
 import org.carbon.runtime.CarbonExpression
 import org.carbon.runtime.CarbonScope
