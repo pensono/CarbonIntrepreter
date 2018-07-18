@@ -4,13 +4,14 @@ import org.carbon.CarbonException
 
 /**
  * @author Ethan
+ * @param <CE> CarbonExpression
  */
 class OperatorExpression<out CE: CarbonExpression, T>(
         val base: CE,
-        val operatorName : String,
-        private val unwrapper: (CE) -> T,
+        val operatorName: String,
+        private val operator: (T, T) -> T,
         private val wrapper: (T) -> CE,
-        private val operator: (T, T) -> T
+        private val unwrapper: (CE) -> T
     ) : CarbonExpression() {
 
     override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {

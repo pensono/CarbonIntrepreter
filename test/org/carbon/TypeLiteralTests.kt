@@ -58,6 +58,18 @@ class TypeLiteralTests {
         """, "R", CarbonInteger(12))
     }
 
+//    @Test
+//    fun derivedMemberWithArguments() {
+//        envTest("""
+//            Rectangle = {
+//                Width:Integer,
+//                Height:Integer,
+//                SuperArea(Integer) = Width * Height * Integer
+//            };
+//            R = Rectangle(3,4).SuperArea(5);
+//        """, "R", CarbonInteger(60))
+//    }
+
     @Test
     fun derivedMemberUsesOuterScope() {
         envTest("""

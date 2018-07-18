@@ -12,7 +12,7 @@ abstract class CarbonScope: PrettyPrintable {
     open fun lookupName(name: String): CarbonExpression? = getMember(name)
     // Turn this into a map?
     open fun getMember(name: String): CarbonExpression? = null
-    //open val members : Map<String, CarbonExpression> = mapOf()
+    //open val actualParameters : Map<String, CarbonExpression> = mapOf()
 
     /**
      * Not commutative

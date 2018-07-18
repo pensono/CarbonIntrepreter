@@ -12,7 +12,7 @@ import org.carbon.runtime.CarbonScope
 // Should this inherit from Node, or some kind of AstNode?
 class MemberNode(private val location: Interval, private val base: Node, private val memberName: String) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression {
-        val evaluatedBase = base.link(scope).reduce()
+        val evaluatedBase = base.link(scope).eval()
         return evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $evaluatedBase", location)
     }
 

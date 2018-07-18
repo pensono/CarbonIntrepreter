@@ -22,7 +22,7 @@ class CarbonInteger(var value: Int) : CarbonExpression() {
     )
 
     private fun integerMagma(opName: String, operation :(Int, Int) -> Int) =
-        OperatorExpression(this, opName, CarbonInteger::value, ::CarbonInteger, operation)
+        OperatorExpression(this, opName, operation, ::CarbonInteger, CarbonInteger::value)
 
     // Mostly here for tests
     override fun equals(other: Any?): Boolean = (other is CarbonInteger) && other.value == value

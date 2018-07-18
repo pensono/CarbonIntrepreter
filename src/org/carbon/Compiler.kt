@@ -81,10 +81,14 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 
     override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): Node {
         val members = toParameterList(lexicalScope, ctx.members!!)
-        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull().toMap() // Is this the right way to deal with nulls?
-        // Visit statement always returns with no actual parameters... is this a larger design issue?
-        val derivedMembers = derivedMemberExpressions.mapValues { e -> e.value.body }
 
+        // This transformation code is bad.
+        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
+        // Visit statement always returns with no actual parameters... is this a larger design issue?
+        val derivedMembers = derivedMemberExpressions.toMap().mapValues { e -> e.value.body!! }
+
+        // Does ArbitraryTypeNode need to know the names of the parameters again?
+        //return FunctionNode(derivedMemberExpressions.map { e -> e.first }, ArbitraryTypeNode(members, derivedMembers))
         return ArbitraryTypeNode(members, derivedMembers)
     }
 
@@ -94,14 +98,14 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 }
 
 // Should this return a CarbonExpression and not an ScalarExpression?
-private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, ScalarExpression>? {
+private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, CompositeExpression>? {
     val  body = NodeVisitor(lexicalScope).visit(ctx.expression()) ?: return null
     val parameterNames = if (ctx.hasParameterList != null) {
         toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first}
     } else {
         listOf()
     }
-    return Pair(ctx.declaration().text, ScalarExpression(lexicalScope, body, parameterNames))
+    return Pair(ctx.declaration().text, CompositeExpression(lexicalScope, body, mapOf(), mapOf(), parameterNames))
 }
 
 private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, Node>> {

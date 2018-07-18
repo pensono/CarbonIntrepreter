@@ -7,11 +7,14 @@ import org.carbon.syntax.Node
  */
 class CompositeExpression(
         val lexicalScope: CarbonScope,
-        val members: Map<String, CarbonExpression>,
-        val derivedMembers: Map<String, Node>,
-        val formalParameters : List<String> = listOf<String>() // String/type?
-        //val actualParameters : Map<String, CarbonExpression> = mapOf()
+        val body: Node? = null, // Not sure if this is the best type, but we'll stick with it for now
+        val derivedMembers: Map<String, Node> = mapOf(),
+        val actualParameters: Map<String, CarbonExpression> = mapOf(),
+        val formalParameters: List<String> = listOf<String>(),
+        operatorCallback: (CompositeExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
     ) : CarbonExpression(){
+
+    val members = actualParameters + operatorCallback(this)
 
     // I don't think link should happen here
     override fun getMember(name: String): CarbonExpression? = members[name] ?: derivedMembers[name]?.link(this)
@@ -28,11 +31,20 @@ class CompositeExpression(
         val newMembers = nameMapping.toMap().filterValues { n -> n != null }
                 .mapValues { e -> e.value as CarbonExpression } + members // Cast needed to get the type system to recognize that nulls were filtered out.
 
-        return CompositeExpression(lexicalScope, newMembers, derivedMembers, newFormalParameters)
+        // Eval with no formal parameters?
+        return CompositeExpression(lexicalScope, body, derivedMembers, newMembers, newFormalParameters)
         //return CompositeExpression(lexicalScope, newMembers, newFormalParameters)
     }
 
-    // TODO check for colissions between members and actualParameters
+    override fun eval() =
+        // This seems wrong but it works
+        if (formalParameters.isEmpty() && body != null) {
+            body.link(this).eval() // It's weird how this line also appears in apply
+        } else {
+            this // Basically don't evaluate until fully applied
+        }
+
+    // TODO check for colissions between actualParameters and actualParameters
     override fun lookupName(name: String): CarbonExpression? =
         getMember(name) ?: lexicalScope.lookupName(name)
 }

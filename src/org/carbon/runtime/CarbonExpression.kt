@@ -13,7 +13,7 @@ abstract class CarbonExpression: PrettyPrintable, CarbonScope() {
     // TODO this logic of parameter omission should be consolidated to one location, rather than pushed upon the child classes
     open fun apply(arguments: List<CarbonExpression?>) : CarbonExpression = this // Weak sauce implementation
 
-    open fun reduce() = this // Good default?
+    open fun eval() = this // Good default?
 
     // Set member?
 
