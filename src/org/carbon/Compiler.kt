@@ -48,6 +48,12 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         return IntegerNode(value)
     }
 
+    override fun visitStringLiteral(ctx: CarbonParser.StringLiteralContext): Node {
+        val value = ctx.text.substring(1, ctx.text.length - 1) // Chop off the quotes at the ends
+                        .replace("\\n", "\n")
+        return StringNode(value)
+    }
+
     override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): Node {
         val lhs = ctx.lhs.accept(this)
         val rhs = ctx.rhs.accept(this)
@@ -63,7 +69,6 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 
     override fun visitApplicationExpression(ctx: CarbonParser.ApplicationExpressionContext): Node {
         val base = ctx.base.accept(this)
-//        val args = ctx.arguments.map { arg -> arg.accept(this) }
 
         // Kinda trash, but it's the best I can do
         // https://stackoverflow.com/questions/51074953/antlr-parse-with-missing-elements

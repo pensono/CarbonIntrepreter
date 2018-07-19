@@ -11,7 +11,5 @@ import org.carbon.runtime.CarbonScope
 class IntegerNode(val value: Int) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression = CarbonInteger(value)
 
-    override fun equals(other: Any?): Boolean = (other is IntegerNode) && other.value == value
-    override fun hashCode(): Int = value
     override fun getShortString(): String = "IntegerNode($value)"
 }

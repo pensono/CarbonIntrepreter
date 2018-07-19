@@ -10,7 +10,11 @@ import org.carbon.syntax.Node
 // Refactor this into a CarbonScope?
 // Refactor this to be immutable? It can also be an object if its immutable
 class RootScope : CarbonScope() {
-    val members: MutableMap<String, CarbonExpression> = mutableMapOf("Integer" to IntegerType)
+    val members: MutableMap<String, CarbonExpression> = mutableMapOf(
+            "Integer" to IntegerType,
+            "String" to StringType
+    )
+
     override fun getMember(name: String): CarbonExpression? = members[name]
 
     fun putMember(name: String, member: CarbonExpression) = members.put(name, member)

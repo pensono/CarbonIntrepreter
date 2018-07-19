@@ -3,20 +3,9 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonInteger(var value: Int) : CarbonExpression(operatorCallback = ::generateOperators) {
+class CarbonInteger(value: Int) : CarbonPrimitive<Int>(value, ::generateOperators) {
     override fun getShortString(): String = "CarbonInteger($value)"
-
-    // Can this override be removed?
-    override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
-        assert(arguments.isEmpty())
-        return this
-    }
-
-    // Mostly here for tests
-    override fun equals(other: Any?): Boolean = (other is CarbonInteger) && other.value == value
-    override fun hashCode(): Int = value
 }
-
 
 private fun generateOperators(expr: CarbonExpression) = mapOf(
         "+" to integerMagma(expr as CarbonInteger, "+", Int::plus), // Is there a way to remove the cast?

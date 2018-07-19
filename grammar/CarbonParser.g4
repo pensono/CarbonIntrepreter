@@ -33,10 +33,13 @@ expression_item
 terminalExpression
     : typeLiteral
     | numberLiteral
+    | stringLiteral
     | identifier
     ;
 
 numberLiteral: '-'? NUMBER;
+
+stringLiteral: STRING;
 
 //expression
 //    : value_expression

@@ -13,7 +13,7 @@ class TypeLiteralTests {
 //        val expr = testEval("{A:Integer}") as CarbonType
 //        Assert.assertEquals(expr.getInstanceMember("A"),  IntegerType)
 //    }
-
+//
 //    @Test
 //    fun implicitlyNamedMember() {
 //        val expr = testEval("{Integer}") as CarbonType

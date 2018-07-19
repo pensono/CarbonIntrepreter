@@ -10,6 +10,7 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
     LABEL:         Letter (Letter | Digit)*;
     NUMBER:        '-'? Digit (Letter | Digit)*;
+    STRING:        '"' (~["\\\r\n] | '\\n')*? '"';
 
     SYMBOL1:       '*' | '/'; // To support two levels of precedence
     SYMBOL2:       '|' | '+' | '-';
@@ -28,6 +29,7 @@ LEFT_SQUARE: '[';
 RIGHT_SQUARE: ']';
 COLON: ':';
 MINUS: '-';
+QUOTE: '"';
 
 // Fragment rules
 
