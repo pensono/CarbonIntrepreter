@@ -8,5 +8,15 @@ import org.carbon.runtime.RootScope
  * @date 6/12/2018
  */
 fun main(args: Array<String>) {
-    compile(CharStreams.fromFileName("res/Dataflow.cbn"), RootScope())
+    var environment = RootScope()
+    // TODO load the standard library
+
+    while (true) {
+        print("> ")
+        val input = readLine() ?: break
+
+        val value = evaluate(input, environment)!!
+
+        println(value.getFullString())
+    }
 }

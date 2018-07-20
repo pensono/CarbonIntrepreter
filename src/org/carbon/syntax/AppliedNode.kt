@@ -13,8 +13,8 @@ import org.carbon.runtime.CarbonScope
  */
 class AppliedNode(private val location: Interval, private val base: Node, private val actualParameters: List<Node?>) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression {
-        val evaluatedParameters = actualParameters.map { n -> n?.link(scope)?.eval() }
         val baseExpr = base.link(scope).eval()
+        val evaluatedParameters = actualParameters.map { n -> n?.link(scope)?.eval() }
 
         return baseExpr.apply(evaluatedParameters).eval()
     }

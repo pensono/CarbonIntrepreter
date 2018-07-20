@@ -46,6 +46,11 @@ class TypeLiteralTests {
         exprTest("{A:Integer,B:Integer}(2,3).B", CarbonInteger(3))
     }
 
+    @Test(expected = CompilationException::class)
+    fun squashOperatorRemoved() {
+        testEval("{A:Integer}(2) : {B:Integer}(2)")
+    }
+
     @Test
     fun derivedMember() {
         envTest("""
@@ -58,17 +63,17 @@ class TypeLiteralTests {
         """, "R", CarbonInteger(12))
     }
 
-//    @Test
-//    fun derivedMemberWithArguments() {
-//        envTest("""
-//            Rectangle = {
-//                Width:Integer,
-//                Height:Integer,
-//                SuperArea(Integer) = Width * Height * Integer
-//            };
-//            R = Rectangle(3,4).SuperArea(5);
-//        """, "R", CarbonInteger(60))
-//    }
+    @Test
+    fun derivedMemberWithArguments() {
+        envTest("""
+            Rectangle = {
+                Width:Integer,
+                Height:Integer,
+                SuperArea(Integer) = Width * Height * Integer
+            };
+            R = Rectangle(3,4).SuperArea(5);
+        """, "R", CarbonInteger(60))
+    }
 
     @Test
     fun derivedMemberUsesOuterScope() {

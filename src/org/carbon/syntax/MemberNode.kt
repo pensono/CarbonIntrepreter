@@ -16,6 +16,6 @@ class MemberNode(private val location: Interval, private val base: Node, private
         return evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $evaluatedBase", location)
     }
 
-    override fun getShortString(): String = "Member Expression. Member name: $memberName. Base:"
+    override fun getShortString(): String = "Member Node. Member name: $memberName. Base:"
     override fun getBodyString(level: Int): String = base.getFullString(level)
 }

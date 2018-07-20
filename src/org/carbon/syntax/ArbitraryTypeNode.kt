@@ -8,14 +8,14 @@ import org.carbon.runtime.*
  */
 class ArbitraryTypeNode(
         private val instanceMembers: List<Pair<String, Node>>, // Name to type
-        private val derivedMembers: Map<String, Node> // Name to body
+        private val derivedMembers: List<Statement>
     ) : Node() {
 
     override fun link(scope: CarbonScope): CarbonExpression {
         // Is this scope correct?
         val parameterNames = instanceMembers.map { p -> p.first }
 
-        return CarbonExpression(scope, null, derivedMembers, formalParameters = parameterNames, operatorCallback = { expr ->
+        return CarbonExpression(scope, ArbitraryInstanceNode(instanceMembers, derivedMembers), formalParameters = parameterNames, memberCallback = { expr ->
             mapOf(":" to OperatorExpression(expr, "squash",
                     { lhs, rhs ->
                         CarbonExpression(
@@ -28,7 +28,7 @@ class ArbitraryTypeNode(
         })
     }
 
-    override fun getShortString(): String = "ArbitraryTypeNode. Instance actualParameters:"
+    override fun getShortString(): String = "ArbitraryTypeNode. Instance members:"
     override fun getBodyString(level: Int): String =
-            fullString(level + 1, instanceMembers.toMap()) + fullString(level + 1, derivedMembers.toMap())
+            fullString(level + 1, instanceMembers.toMap()) + fullString(level + 1, derivedMembers)
 }

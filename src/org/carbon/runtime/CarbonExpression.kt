@@ -1,25 +1,26 @@
 package org.carbon.runtime
 
 import org.carbon.PrettyPrintable
+import org.carbon.fullString
+import org.carbon.indented
 import org.carbon.syntax.Node
 
 /**
  * @author Ethan
  */
 open class CarbonExpression(
-    val lexicalScope: CarbonScope? = null, // Should this be required?
-    val body: Node? = null, // Not sure if this is the best type, but we'll stick with it for now
-    val derivedMembers: Map<String, Node> = mapOf(),
-    val actualParameters: Map<String, CarbonExpression> = mapOf(),
-    val formalParameters: List<String> = listOf<String>(),
-    operatorCallback: (CarbonExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
+        val lexicalScope: CarbonScope? = null, // Should this be required?
+        val body: Node? = null, // Not sure if this is the best type, but we'll stick with it for now
+        val derivedMembers: Map<String, CarbonExpression> = mapOf(),
+        val actualParameters: Map<String, CarbonExpression> = mapOf(),
+        val formalParameters: List<String> = listOf<String>(),
+        memberCallback: (CarbonExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
     ) : PrettyPrintable, CarbonScope() {
 
-        val members = actualParameters + operatorCallback(this)
+        val members = actualParameters + memberCallback(this)
 
         // I don't think link should happen here
-        override fun getMember(name: String): CarbonExpression? = members[name] ?: derivedMembers[name]?.link(this)
-
+        override fun getMember(name: String): CarbonExpression? = members[name] ?: derivedMembers[name]
 
         /**
          * A null element signifies a parameter that was omitted. If any parameters are omitted, then a function
@@ -40,7 +41,7 @@ open class CarbonExpression(
 
         open fun eval() : CarbonExpression =
                 if (formalParameters.isEmpty() && body != null) {
-                    body.link(this).eval() // It's weird how this line also appears in apply
+                     body.link(this).eval()
                 } else {
                     this // Basically don't evaluate until fully applied
                 }
@@ -49,5 +50,9 @@ open class CarbonExpression(
         override fun lookupName(name: String): CarbonExpression? =
                 getMember(name) ?: lexicalScope?.lookupName(name)
     override fun getShortString(): String = "Carbon Expression"
+    override fun getBodyString(level: Int): String =
+            indented(level, "Formal Parameters: " + formalParameters.joinToString(", ")) +
+            indented(level, "Members:") + fullString(level + 1, members) +
+            indented(level, "Body:") + (body?.getFullString(level + 1) ?: indented(level + 1, "None."))
     override fun toString(): String = getFullString()
 }

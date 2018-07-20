@@ -16,8 +16,7 @@ fun exprTest(input: String, expected: CarbonExpression) {
 }
 
 fun testEval(input: String) : CarbonExpression {
-    val scope = RootScope()
-    return compileExpression(CharStreams.fromString(input))!!.link(scope).eval()
+    return evaluate(input, RootScope())!!
 }
 
 fun envTest(input: String, member: String, expected: CarbonExpression) {

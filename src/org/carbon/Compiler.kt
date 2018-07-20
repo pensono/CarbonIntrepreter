@@ -1,6 +1,7 @@
 package org.carbon
 
 import org.antlr.v4.runtime.CharStream
+import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
@@ -21,8 +22,9 @@ fun compile(input: CharStream, environment: RootScope) : RootScope? {
     }
 
     for (statement in parser.compilationUnit().statement()) {
-        val compiledStatement = visitStatement(environment, statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
-        environment.putMember(compiledStatement.first, compiledStatement.second)
+        val compiledStatement = StatementVisitor(environment).visit(statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
+        val body = CarbonExpression(environment, compiledStatement.body, formalParameters = compiledStatement.formalParameters)
+        environment.putMember(compiledStatement.name, body)
     }
 
     // TODO return a modified version of the environment?
@@ -40,6 +42,11 @@ fun compileExpression(input: CharStream) : Node? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
     return NodeVisitor(RootScope()).visit(expressionAst)
+}
+
+fun evaluate(input: String, scope: CarbonScope) : CarbonExpression? {
+    val expression = compileExpression(CharStreams.fromString(input))
+    return expression?.link(scope)?.eval()
 }
 
 class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>() {
@@ -88,9 +95,10 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         val members = toParameterList(lexicalScope, ctx.members!!)
 
         // This transformation code is bad.
-        val derivedMemberExpressions = ctx.derivedMembers.map { s -> visitStatement(lexicalScope, s) }.filterNotNull() // Is this the right way to deal with nulls?
-        // Visit statement always returns with no actual parameters... is this a larger design issue?
-        val derivedMembers = derivedMemberExpressions.toMap().mapValues { e -> e.value.body!! }
+        assert(!ctx.derivedMembers.contains(null))
+
+        val statementVisitor = StatementVisitor(lexicalScope)
+        val derivedMembers = ctx.derivedMembers.map(statementVisitor::visit).filterNotNull() // Null filter should be a no-op
 
         return ArbitraryTypeNode(members, derivedMembers)
     }
@@ -100,22 +108,23 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
     }
 }
 
-// Should this return a CarbonExpression and not an ScalarExpression?
-private fun visitStatement(lexicalScope: CarbonScope, ctx: CarbonParser.StatementContext) : Pair<String, CarbonExpression>? {
-    val  body = NodeVisitor(lexicalScope).visit(ctx.expression()) ?: return null
-    val parameterNames = if (ctx.hasParameterList != null) {
-        toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first}
-    } else {
-        listOf()
+class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Statement>() {
+    override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
+        val body = NodeVisitor(lexicalScope).visit(ctx.expression())
+        val parameterNames = if (ctx.hasParameterList != null) {
+            toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first} // Ignore the types for now
+        } else {
+            listOf()
+        }
+        return Statement(ctx.declaration().text, body, parameterNames)
     }
-    return Pair(ctx.declaration().text, CarbonExpression(lexicalScope, body, mapOf(), mapOf(), parameterNames))
 }
 
-private fun toParameterList(scope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, Node>> {
+private fun toParameterList(lexicalScope: CarbonScope, paramsCtx: List<CarbonParser.ParameterContext>): List<Pair<String, Node>> {
     return paramsCtx.map { c ->
         Pair(
                 c.name?.text ?: c.type().text!!,
-                c.type().accept(NodeVisitor(scope))
+                c.type().accept(NodeVisitor(lexicalScope))
         )
     }
 }
