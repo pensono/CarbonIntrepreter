@@ -1,4 +1,3 @@
-- Multicharactor infix operator symbols
 - Guards
 - Recursion
 - Registers

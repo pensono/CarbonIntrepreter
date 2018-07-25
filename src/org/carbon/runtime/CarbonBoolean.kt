@@ -4,7 +4,10 @@ package org.carbon.runtime
  * @author Ethan
  */
 class CarbonBoolean(value: Boolean) : CarbonPrimitive<Boolean>(value, {expr -> generateOperators(expr as CarbonBoolean)}) {
-    override fun getShortString(): String = "CarbonBoolean(\"$value\")"
+    override fun getShortString(): String {
+        val valueStr = if (value) "True" else "False"
+        return "CarbonBoolean($valueStr)"
+    }
 }
 
 private fun generateOperators(expr: CarbonBoolean) = mapOf(

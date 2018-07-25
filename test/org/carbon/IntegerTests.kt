@@ -49,7 +49,36 @@ class IntegerTests {
 
     @Test
     fun equals() {
+        exprTest("1+2 == 5", CarbonBoolean(false))
         exprTest("1+2 == 3", CarbonBoolean(true))
         exprTest("1+2 == 1", CarbonBoolean(false))
+    }
+
+    @Test
+    fun lessThan() {
+        exprTest("1+2 < 5", CarbonBoolean(true))
+        exprTest("1+2 < 3", CarbonBoolean(false))
+        exprTest("1+2 < 1", CarbonBoolean(false))
+    }
+
+    @Test
+    fun lessThanOrEqual() {
+        exprTest("1+2 <= 5", CarbonBoolean(true))
+        exprTest("1+2 <= 3", CarbonBoolean(true))
+        exprTest("1+2 <= 1", CarbonBoolean(false))
+    }
+
+    @Test
+    fun greaterThan() {
+        exprTest("1+2 > 5", CarbonBoolean(false))
+        exprTest("1+2 > 3", CarbonBoolean(false))
+        exprTest("1+2 > 1", CarbonBoolean(true))
+    }
+
+    @Test
+    fun greaterThanOrEqual() {
+        exprTest("1+2 >= 5", CarbonBoolean(false))
+        exprTest("1+2 >= 3", CarbonBoolean(true))
+        exprTest("1+2 >= 1", CarbonBoolean(true))
     }
 }
