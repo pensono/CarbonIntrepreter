@@ -3,17 +3,25 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonInteger(value: Int) : CarbonPrimitive<Int>(value, ::generateOperators) {
+class CarbonInteger(value: Int) : CarbonPrimitive<Int>(value, {expr -> generateOperators(expr as CarbonInteger)}) {
     override fun getShortString(): String = "CarbonInteger($value)"
 }
 
-private fun generateOperators(expr: CarbonExpression) = mapOf(
-        "+" to integerMagma(expr as CarbonInteger, "+", Int::plus), // Is there a way to remove the cast?
-        "*" to integerMagma(expr as CarbonInteger, "*", Int::times)
+private fun generateOperators(expr: CarbonInteger) = mapOf(
+        "+" to integerMagma(expr, "+", Int::plus),
+        "*" to integerMagma(expr, "*", Int::times),
+        "==" to integerRelation(expr, "==", Int::equals),
+        "<" to integerRelation(expr, "<", {x, y -> x < y}),
+        ">" to integerRelation(expr, ">", {x, y -> x > y}),
+        "<=" to integerRelation(expr, "<=", {x, y -> x <= y}),
+        ">=" to integerRelation(expr, ">=", {x, y -> x >= y})
 )
 
 private fun integerMagma(base: CarbonInteger, opName: String, operation: (Int, Int) -> Int) =
-        OperatorExpression(base, opName, operation, ::CarbonInteger, CarbonInteger::value)
+        OperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonInteger)
+
+private fun integerRelation(base: CarbonInteger, opName: String, operation: (Int, Int) -> Boolean) =
+        OperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonBoolean)
 
 object IntegerType : CarbonExpression() {
     override fun getShortString(): String = "Integer Type"

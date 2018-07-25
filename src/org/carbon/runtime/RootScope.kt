@@ -12,7 +12,10 @@ import org.carbon.syntax.Node
 class RootScope : CarbonScope() {
     val members: MutableMap<String, CarbonExpression> = mutableMapOf(
             "Integer" to IntegerType,
-            "String" to StringType
+            "String" to StringType,
+            "Boolean" to BooleanType,
+            "True" to CarbonBoolean(true),
+            "False" to CarbonBoolean(false)
     )
 
     override fun getMember(name: String): CarbonExpression? = members[name]

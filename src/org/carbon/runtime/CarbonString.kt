@@ -3,16 +3,16 @@ package org.carbon.runtime
 /**
  * @author Ethan
  */
-class CarbonString(value: String) : CarbonPrimitive<String>(value, ::generateOperators) {
+class CarbonString(value: String) : CarbonPrimitive<String>(value, {expr -> generateOperators(expr as CarbonString)}) {
     override fun getShortString(): String = "CarbonString(\"$value\")"
 }
 
-private fun generateOperators(expr: CarbonExpression) = mapOf(
-        "+" to stringMagma(expr as CarbonString, "+", String::plus) // Is there a way to remove the cast?
+private fun generateOperators(expr: CarbonString) = mapOf(
+        "+" to stringMagma(expr, "+", String::plus) // Is there a way to remove the cast?
 )
 
 private fun stringMagma(base: CarbonString, opName: String, operation: (String, String) -> String) =
-        OperatorExpression(base, opName, operation, ::CarbonString, CarbonString::value)
+        OperatorExpression(base, opName, operation, CarbonString::value, ::CarbonString)
 
 object StringType : CarbonExpression() {
     override fun getShortString(): String = "String Type"

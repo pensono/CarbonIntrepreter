@@ -6,11 +6,6 @@ compilationUnit
     : (statement ';')*
     ;
 
-typeLiteral
-    : '{' ((members+=parameter | derivedMembers+=statement) (',' (members+=parameter | derivedMembers+=statement))* ','?) ? '}'
-    //| enum_list
-    ;
-
 statement
     // Can this grammar rule be simplified?
     // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
@@ -18,9 +13,10 @@ statement
     ;
 
 expression
-    : base=expression '(' first_argument=expression? other_arguments+=expression_item* ')' # ApplicationExpression
-    | lhs=expression op=SYMBOL1 rhs=expression # InfixExpression
-    | lhs=expression op=(':' | SYMBOL2) rhs=expression # InfixExpression
+    : typeLiteral # Terminal
+    | base=expression '(' first_argument=expression? other_arguments+=expression_item* ')' # ApplicationExpression
+    | lhs=expression symbol1 rhs=expression # InfixExpression // Break into two to support prescidence at the syntax level
+    | lhs=expression symbol2 rhs=expression # InfixExpression // I would like to make the symbol assigned to a variable 'op', but because the symbol is two seperate syntax nodes, this cannot be done.
     | base=expression '.' identifier # DotExpression
     | terminalExpression # Terminal
     ;
@@ -35,6 +31,11 @@ terminalExpression
     | numberLiteral
     | stringLiteral
     | identifier
+    ;
+
+typeLiteral
+    : '{' ((members+=parameter | derivedMembers+=statement) (',' (members+=parameter | derivedMembers+=statement))* ','?) ? '}'
+    //| enum_list
     ;
 
 numberLiteral: '-'? NUMBER;
@@ -68,6 +69,9 @@ declaration
     | LABEL
     ;
 
+symbol1 : SYMBOL1;
+symbol2 : (SYMBOL2 | ':' | '=') (SYMBOL1 | SYMBOL2 | ':' | '=')*;
+
 type
     : identifier ('[' refinement_list ']')?
     ;
@@ -81,23 +85,6 @@ refinement         // What about Size == 5
     | identifier
 //    | identifier '(' expression_list ')'
     ;
-
-
-//compound_expression
-//    : '{' statement_list '}'
-//    ;
-
-//statement_list
-//    : statement*
-//    ;
-
-//parameterization
-//    : '(' parameter_list ')'
-//    ;
-
-//parameter_list
-//    : parameter (',' parameter)*
-//    ;
 
 
 identifier

@@ -1,0 +1,6 @@
+
+Data = /* Array of bytes */
+Stream = Serialize(Data, 9600)
+OutputPin = ManchesterEncoded(Stream)
+
+OutputPin.Sample(250_ms)

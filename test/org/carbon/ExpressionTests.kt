@@ -76,4 +76,15 @@ class ExpressionTests {
             R = F(4);
         """, "R", CarbonInteger(4*2+2))
     }
+
+//    @Test
+//    fun recursive() {
+//        envTest(""" // The classic example
+//            Fib(n: Integer) | n == 0 = 0
+//                            | n == 1 = 1
+//                            = Fib(n-1) + Fib(n-2);
+//            R = Fib(14);
+//        """, "R", CarbonInteger(377))
+//    }
+
 }

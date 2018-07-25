@@ -64,8 +64,9 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
     override fun visitInfixExpression(ctx: CarbonParser.InfixExpressionContext): Node {
         val lhs = ctx.lhs.accept(this)
         val rhs = ctx.rhs.accept(this)
+        val operationName = ctx.getChild(1).text
 
-        return AppliedNode(ctx.sourceInterval, MemberNode(ctx.sourceInterval, lhs, ctx.op.text), listOf(rhs))
+        return AppliedNode(ctx.sourceInterval, MemberNode(ctx.sourceInterval, lhs, operationName), listOf(rhs))
     }
 
     override fun visitDotExpression(ctx: CarbonParser.DotExpressionContext): Node {

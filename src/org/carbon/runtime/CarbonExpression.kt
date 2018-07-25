@@ -25,6 +25,8 @@ open class CarbonExpression(
         /**
          * A null element signifies a parameter that was omitted. If any parameters are omitted, then a function
          * which takes the omitted parameters should be returned.
+         *
+         * Parameters should be fully evaluated before being passed into apply.
          */
         open fun apply(arguments: List<CarbonExpression?>) : CarbonExpression {
             assert(arguments.size == formalParameters.size) // You can't leave out parameters. Plus(4) does not compile, Plus(4,) does

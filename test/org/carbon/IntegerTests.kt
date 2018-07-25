@@ -1,5 +1,6 @@
 package org.carbon
 
+import org.carbon.runtime.CarbonBoolean
 import org.carbon.runtime.CarbonInteger
 import org.junit.Test
 
@@ -39,9 +40,16 @@ class IntegerTests {
         exprTest("-34+57", CarbonInteger(23))
         exprTest("1+1+2", CarbonInteger(4))
     }
+
     @Test
     fun orderOfOperations() {
         exprTest("1+2*3", CarbonInteger(7))
         exprTest("2*3+1", CarbonInteger(7))
+    }
+
+    @Test
+    fun equals() {
+        exprTest("1+2 == 3", CarbonBoolean(true))
+        exprTest("1+2 == 1", CarbonBoolean(false))
     }
 }

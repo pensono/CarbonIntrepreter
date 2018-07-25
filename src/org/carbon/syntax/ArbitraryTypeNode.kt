@@ -24,7 +24,7 @@ class ArbitraryTypeNode(
                                 lhs.derivedMembers + rhs.derivedMembers,
                                 lhs.actualParameters + rhs.actualParameters,
                                 lhs.formalParameters + rhs.formalParameters)
-                    }, { it }, { it }))
+                    }, { it }, { x: CarbonExpression -> x })) // The typechecker needs a type here
         })
     }
 
