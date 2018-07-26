@@ -20,7 +20,6 @@ class ExpressionTests {
         envTest("Sum(A:Integer, B:Integer, C:Integer) = A + B + C; R=Sum(1,2,3);", "R", CarbonInteger(6))
     }
 
-
     @Test
     fun functionIgnoresArgument() {
         envTest("F(A:Integer) = 4; R=F(3);", "R", CarbonInteger(4))

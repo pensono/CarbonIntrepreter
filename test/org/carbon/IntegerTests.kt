@@ -32,7 +32,7 @@ class IntegerTests {
 
 
     @Test
-    fun infixOperators() {
+    fun addition() {
         exprTest("1+1", CarbonInteger(2))
         exprTest("34+57", CarbonInteger(91))
         exprTest("-34+57", CarbonInteger(23))
@@ -40,9 +40,21 @@ class IntegerTests {
     }
 
     @Test
+    fun subtraction() {
+        exprTest("1-1", CarbonInteger(0))
+        exprTest("1- 1", CarbonInteger(0))
+        exprTest("1 -1", CarbonInteger(0))
+        exprTest("1 - 1", CarbonInteger(0))
+        exprTest("34-57", CarbonInteger(-23))
+        exprTest("-34-57", CarbonInteger(-91))
+        exprTest("1-1-2", CarbonInteger(-2))
+    }
+
+    @Test
     fun orderOfOperations() {
         exprTest("1+2*3", CarbonInteger(7))
         exprTest("2*3+1", CarbonInteger(7))
+        exprTest("1-1-2*4", CarbonInteger(-8))
     }
 
     @Test

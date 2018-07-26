@@ -47,23 +47,6 @@ numberLiteral: '-'? NUMBER;
 
 stringLiteral: STRING;
 
-//expression
-//    : value_expression
-//    //| compound_expression
-//    ;
-
-//value_expression
-//    : term_expression (SYMBOL term_expression)*
-//    ;
-//
-//term_expression
-//    : NUMBER
-//    | '(' value_expression ')'
-//    | identifier
-//    | term_expression '.' identifier
-//    | term_expression '(' expression_list ')'
-//    ;
-
 parameter
     : name=LABEL ':' type
     | type
@@ -75,7 +58,7 @@ declaration
     ;
 
 symbol1 : SYMBOL1;
-symbol2 : (SYMBOL2 | ':' | '=' | '|') (SYMBOL1 | SYMBOL2 | ':' | '=' | '|')*;
+symbol2 : (SYMBOL2 | ':' | '=' | '|' | '-') (SYMBOL1 | SYMBOL2 | ':' | '=' | '|' | '-')*;
 
 type
     : identifier ('[' refinement_list ']')?
@@ -94,6 +77,6 @@ refinement         // What about Size == 5
 
 identifier
     : LABEL
-    | SYMBOL1 | SYMBOL2 // Is this even an identifier?
+    | symbol1 | symbol2 // Is this even an identifier?
     //: LABEL ('.' LABEL)* // Just one level?
     ;

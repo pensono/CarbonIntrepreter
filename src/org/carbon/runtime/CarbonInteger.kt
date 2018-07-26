@@ -9,6 +9,7 @@ class CarbonInteger(value: Int) : CarbonPrimitive<Int>(value, {expr -> generateO
 
 private fun generateOperators(expr: CarbonInteger) = mapOf(
         "+" to integerMagma(expr, "+", Int::plus),
+        "-" to integerMagma(expr, "-", Int::minus),
         "*" to integerMagma(expr, "*", Int::times),
         "==" to integerRelation(expr, "==", Int::equals),
         "<" to integerRelation(expr, "<", {x, y -> x < y}),

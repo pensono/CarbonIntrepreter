@@ -26,4 +26,5 @@ class OperatorExpression<out CET: CarbonExpression, out CER: CarbonExpression, T
     }
 
     override fun getShortString(): String = "Operator $operatorName"
+    override fun getBodyString(level: Int): String = ""
 }
