@@ -1,7 +1,9 @@
 package org.carbon.syntax
 
 import org.carbon.fullString
-import org.carbon.runtime.*
+import org.carbon.runtime.CarbonExpression
+import org.carbon.runtime.CarbonScope
+import org.carbon.runtime.OperatorExpression
 
 /**
  * @author Ethan

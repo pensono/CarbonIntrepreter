@@ -18,6 +18,11 @@ class CompilerTests {
     }
 
     @Test
+    fun identifierWithNumber() {
+        envTest("Var1 = 2;", "Var1", CarbonInteger(2))
+    }
+
+    @Test
     fun outOfOrderDependencies() {
         envTest("""
             C = A + B;
@@ -46,6 +51,21 @@ class CompilerTests {
             };
             R = A().B.D;
         """, "R", CarbonInteger(5))
+    }
+
+    @Test
+    fun guards() {
+        envTest("""
+            Choice(A:Integer) | A < 0 = 4
+                              = 5;
+            Option1 = Choice(-2);
+        """, "Option1", CarbonInteger(4))
+
+        envTest("""
+            Choice(A:Integer) | A < 0 = 4
+                              = 5;
+            Option2 = Choice(3);
+        """, "Option2", CarbonInteger(5))
     }
 
     @Test(expected = CompilationException::class)

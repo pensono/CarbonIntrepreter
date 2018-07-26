@@ -6,7 +6,9 @@ import org.antlr.v4.runtime.CommonTokenStream
 import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
-import org.carbon.runtime.*
+import org.carbon.runtime.CarbonExpression
+import org.carbon.runtime.CarbonScope
+import org.carbon.runtime.RootScope
 import org.carbon.syntax.*
 
 /**
@@ -111,7 +113,16 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 
 class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Statement>() {
     override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
-        val body = NodeVisitor(lexicalScope).visit(ctx.expression())
+        var body = NodeVisitor(lexicalScope).visit(ctx.default_expression)
+
+        // Wrap body in BranchNodes for each guard (if any)
+        for (guard in ctx.guards.reversed()) {
+            val predicate = NodeVisitor(lexicalScope).visit(guard.predicate)
+            val branchBody = NodeVisitor(lexicalScope).visit(guard.body)
+
+            body = BranchNode(predicate, branchBody, body)
+        }
+
         val parameterNames = if (ctx.hasParameterList != null) {
             toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first} // Ignore the types for now
         } else {

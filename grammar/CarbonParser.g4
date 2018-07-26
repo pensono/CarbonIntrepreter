@@ -9,8 +9,13 @@ compilationUnit
 statement
     // Can this grammar rule be simplified?
     // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
-    : declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
+    //: declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
+    : declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
+        (guards+=guard)*
+        '=' default_expression=expression
     ;
+
+guard : '|' predicate=expression '=' body=expression;
 
 expression
     : typeLiteral # Terminal
@@ -70,7 +75,7 @@ declaration
     ;
 
 symbol1 : SYMBOL1;
-symbol2 : (SYMBOL2 | ':' | '=') (SYMBOL1 | SYMBOL2 | ':' | '=')*;
+symbol2 : (SYMBOL2 | ':' | '=' | '|') (SYMBOL1 | SYMBOL2 | ':' | '=' | '|')*;
 
 type
     : identifier ('[' refinement_list ']')?

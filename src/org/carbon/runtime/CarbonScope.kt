@@ -2,7 +2,6 @@ package org.carbon.runtime
 
 import org.carbon.PrettyPrintable
 import org.carbon.indented
-import org.carbon.syntax.Node
 
 /**
  * @author Ethan

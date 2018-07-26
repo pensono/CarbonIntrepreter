@@ -4,8 +4,6 @@ import org.carbon.runtime.CarbonBoolean
 import org.carbon.runtime.CarbonInteger
 import org.junit.Test
 
-import org.junit.Assert.*
-
 /**
  * @author Ethan Shea
  * *

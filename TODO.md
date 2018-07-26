@@ -2,3 +2,5 @@
 - Recursion
 - Registers
 - Mutators
+- Enumeration Types
+- Sum Types

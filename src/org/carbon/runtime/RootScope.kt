@@ -1,7 +1,6 @@
 package org.carbon.runtime
 
 import org.carbon.fullString
-import org.carbon.syntax.Node
 
 /**
  * @author Ethan Shea

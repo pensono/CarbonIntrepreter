@@ -1,7 +1,6 @@
 package org.carbon.syntax
 
 import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonInteger
 import org.carbon.runtime.CarbonScope
 import org.carbon.runtime.CarbonString
 

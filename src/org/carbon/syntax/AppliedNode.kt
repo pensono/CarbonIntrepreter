@@ -1,7 +1,6 @@
 package org.carbon.syntax
 
 import org.antlr.v4.runtime.misc.Interval
-import org.carbon.CompilationException
 import org.carbon.fullString
 import org.carbon.indented
 import org.carbon.runtime.CarbonExpression
