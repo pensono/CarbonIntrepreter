@@ -76,13 +76,23 @@ class ExpressionTests {
         """, "R", CarbonInteger(4*2+2))
     }
 
-//    @Test
-//    fun recursive() {
-//        envTest(""" // The classic example
-//            Fib(n: Integer) | n == 0 = 0
-//                            | n == 1 = 1
-//                            = Fib(n-1) + Fib(n-2);
-//            R = Fib(14);
-//        """, "R", CarbonInteger(377))
-//    }
+    @Test
+    fun recursive() {
+        envTest("""
+            SlowMult(A: Integer, B: Integer)
+                | B > 1 = A + SlowMult(A, B-1)
+                = A;
+            R = SlowMult(5,7);
+        """, "R", CarbonInteger(35))
+    }
+
+    @Test
+    fun complexRecursive() {
+        envTest(""" // The classic example
+            Fib(N: Integer) | N == 0 = 0
+                            | N == 1 = 1
+                            = Fib(N-1) + Fib(N-2);
+            R = Fib(14);
+        """, "R", CarbonInteger(377))
+    }
 }

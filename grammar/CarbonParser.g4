@@ -58,7 +58,9 @@ declaration
     ;
 
 symbol1 : SYMBOL1;
-symbol2 : (SYMBOL2 | ':' | '=' | '|' | '-') (SYMBOL1 | SYMBOL2 | ':' | '=' | '|' | '-')*;
+// Exclude =, but not ==
+symbol2 : ((SYMBOL2 | ':' | '|' | '-') (SYMBOL1 | SYMBOL2 | ':' | '|' | '-' | '=')*)
+        | ('=' (SYMBOL1 | SYMBOL2 | ':' | '|' | '-' | '=')+);
 
 type
     : identifier ('[' refinement_list ']')?
