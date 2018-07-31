@@ -27,3 +27,10 @@ fun testEnvEval(input: String, member: String) : CarbonExpression {
     val scope = compile(CharStreams.fromString(input), RootScope())!!
     return scope.lookupName(member)!!.eval()
 }
+
+fun mutTest(input: String, mutator: String, member: String, expected: CarbonExpression) {
+    // Env eval
+    // Mutate
+    // Check result
+    //Assert.assertEquals(expected, )
+}

@@ -10,9 +10,10 @@ statement
     // Can this grammar rule be simplified?
     // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
     //: declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
-    : declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
+    : variable_declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
         (guards+=guard)*
-        '=' default_expression=expression
+        '=' default_expression=expression # Declaration
+    | variable_declaration ':' '=' value=expression ';' # Initialization // Strange how this is similar to the assignment rule
     ;
 
 guard : '|' predicate=expression '=' body=expression;
@@ -25,6 +26,8 @@ expression
     | base=expression '.' identifier # DotExpression
     | terminalExpression # Terminal
     ;
+
+assingment : rvalue=expression ':' '=' lvalue=expression;
 
 expression_item
     : ',' expression
@@ -52,7 +55,7 @@ parameter
     | type
     ;
 
-declaration
+variable_declaration
     : LABEL ':' type
     | LABEL
     ;
