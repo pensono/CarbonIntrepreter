@@ -8,13 +8,12 @@ import org.junit.Test
  * @author Ethan
  */
 class MutationTests {
-    @Test
-    fun derivedMemberUsesOuterScope() {
-        mutTest("""
-            Num := 4;
-            *ChangeNum() {
-                Num := 5
-            }
-        """, "ChangeNum", "Num", CarbonInteger(5))
-    }
+//    @Test
+//    fun derivedMemberUsesOuterScope() {
+//        mutTest("""
+//            Num := 4
+//            ChangeNum = // Monads :D
+//                Num := 5
+//        """, "ChangeNum", "Num", CarbonInteger(5))
+//    }
 }

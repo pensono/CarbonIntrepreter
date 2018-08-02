@@ -26,10 +26,10 @@ class TypeLiteralTests {
     @Test
     fun squashOperator() {
         envTest("""
-            Point = { X:Integer, Y:Integer };
-            Point3D = Point : { Z: Integer }; // Horrible example of subclassing
-            P = Point3D(1,2,3);
-            R = P.Z;
+            Point = { X:Integer, Y:Integer }
+            Point3D = Point : { Z: Integer } // Horrible example of subclassing
+            P = Point3D(1,2,3)
+            R = P.Z
         """, "R", CarbonInteger(3))
     }
 
@@ -58,8 +58,8 @@ class TypeLiteralTests {
                 Width:Integer,
                 Height:Integer,
                 Area = Width * Height,
-            };
-            R = Rectangle(3,4).Area;
+            }
+            R = Rectangle(3,4).Area
         """, "R", CarbonInteger(12))
     }
 
@@ -70,21 +70,21 @@ class TypeLiteralTests {
                 Width:Integer,
                 Height:Integer,
                 SuperArea(Integer) = Width * Height * Integer
-            };
-            R = Rectangle(3,4).SuperArea(5);
+            }
+            R = Rectangle(3,4).SuperArea(5)
         """, "R", CarbonInteger(60))
     }
 
     @Test
     fun derivedMemberUsesOuterScope() {
         envTest("""
-            Factor = 4; // Random constant
+            Factor = 4 // Random constant
             Rectangle = {
                 Width:Integer,
                 Height:Integer,
                 SuperArea = Width * Height * Factor,
-            };
-            R = Rectangle(3,4).SuperArea;
+            }
+            R = Rectangle(3,4).SuperArea
         """, "R", CarbonInteger(48))
     }
 

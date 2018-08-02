@@ -113,7 +113,7 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 }
 
 class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Statement>() {
-    override fun visitDeclaration(ctx: CarbonParser.DeclarationContext): Statement {
+    override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
         var body = NodeVisitor(lexicalScope).visit(ctx.default_expression)
 
         // Wrap body in BranchNodes for each guard (if any)
@@ -129,12 +129,7 @@ class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<
         } else {
             listOf()
         }
-        return Statement(ctx.variable_declaration().text, body, parameterNames, StatementType.DECLARATION)
-    }
-
-    override fun visitInitialization(ctx: CarbonParser.InitializationContext): Statement {
-        val value = NodeVisitor(lexicalScope).visit(ctx.expression())
-        return Statement(ctx.variable_declaration().text, value, listOf(), StatementType.INITIALIZATION)
+        return Statement(ctx.variable_declaration().text, body, parameterNames)
     }
 }
 

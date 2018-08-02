@@ -22,8 +22,8 @@ class BooleanTests {
         exprTest("Boolean(True)", CarbonBoolean(true))
         exprTest("Boolean(False)", CarbonBoolean(false))
         envTest("""
-            S = True;
-            R = Boolean(S);
+            S = True
+            R = Boolean(S)
         """, "R", CarbonBoolean(true))
     }
 

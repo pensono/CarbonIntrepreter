@@ -3,7 +3,7 @@ parser grammar CarbonParser;
 options { tokenVocab=CarbonLexer; }
 
 compilationUnit
-    : (statement ';')*
+    : statement*
     ;
 
 statement
@@ -12,8 +12,7 @@ statement
     //: declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
     : variable_declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
         (guards+=guard)*
-        '=' default_expression=expression # Declaration
-    | variable_declaration ':' '=' value=expression ';' # Initialization // Strange how this is similar to the assignment rule
+        '=' default_expression=expression
     ;
 
 guard : '|' predicate=expression '=' body=expression;

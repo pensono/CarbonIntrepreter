@@ -2,7 +2,6 @@ package org.carbon
 
 import org.antlr.v4.runtime.CharStreams
 import org.carbon.runtime.CarbonExpression
-import org.carbon.syntax.Node
 import org.carbon.runtime.RootScope
 import org.junit.Assert
 
@@ -28,9 +27,9 @@ fun testEnvEval(input: String, member: String) : CarbonExpression {
     return scope.lookupName(member)!!.eval()
 }
 
-fun mutTest(input: String, mutator: String, member: String, expected: CarbonExpression) {
-    // Env eval
-    // Mutate
-    // Check result
-    //Assert.assertEquals(expected, )
-}
+//fun mutTest(input: String, mutator: String, member: String, expected: CarbonExpression) {
+//    val scope = compile(CharStreams.fromString(input), RootScope())!!
+//    val monad = scope.lookupName(mutator)!!.eval() as CarbonMonad
+//    monad.
+//    Assert.assertEquals(expected, scope.lookupName(member)!!.eval())
+//}

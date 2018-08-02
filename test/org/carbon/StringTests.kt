@@ -43,8 +43,8 @@ class StringTests {
     fun expression() {
         exprTest("String(\"text\")", CarbonString("text"))
         envTest("""
-            S = "test";
-            R = String(S);
+            S = "test"
+            R = String(S)
         """, "R", CarbonString("test"))
     }
 

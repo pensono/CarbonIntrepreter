@@ -25,8 +25,8 @@ class IntegerTests {
     fun expression() {
         exprTest("Integer(1)", CarbonInteger(1))
         envTest("""
-            I = 3;
-            R = Integer(I);
+            I = 3
+            R = Integer(I)
         """, "R", CarbonInteger(3))
     }
 

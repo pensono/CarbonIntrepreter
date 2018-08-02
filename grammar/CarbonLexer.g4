@@ -13,7 +13,7 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
     STRING:        '"' (~["\\\r\n] | '\\n')*? '"';
 
     SYMBOL1:       '*' | '/'; // To support two levels of precedence
-    SYMBOL2:       '+' | '&' | '<' | '>';
+    SYMBOL2:       '+' | '&' | '<' | '>' | ';';
 
 //    GRAMMAR:       GrammarPart;
 
