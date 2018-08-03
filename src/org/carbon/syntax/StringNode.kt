@@ -1,15 +1,19 @@
 package org.carbon.syntax
 
 import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonScope
-import org.carbon.runtime.CarbonString
+import org.carbon.runtime.WrappedOperatorExpression
 
 /**
  * @author Ethan Shea
  * @date 6/13/2018
  */
-class StringNode(val value: String) : Node() {
-    override fun link(scope: CarbonScope): CarbonExpression = CarbonString(value)
+class StringNode(value: String) : PrimitiveNode<String>(value, ::stringOperators)
 
-    override fun getShortString(): String = "StringNode($value)"
-}
+private fun stringOperators(expr: CarbonExpression) = mapOf(
+        "+" to stringMagma(expr, "+", String::plus) // Is there a way to remove the cast?
+)
+
+private fun stringMagma(base: CarbonExpression, opName: String, operation: (String, String) -> String) =
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapString)
+
+val wrapString = wrapPrimitive(::StringNode)

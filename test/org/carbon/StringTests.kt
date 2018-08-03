@@ -1,7 +1,6 @@
 package org.carbon
 
-import org.carbon.runtime.CarbonInteger
-import org.carbon.runtime.CarbonString
+import org.carbon.syntax.wrapString
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,43 +13,43 @@ import org.junit.Assert.*
 class StringTests {
     @Test
     fun literals() {
-        exprTest("\"Test\"", CarbonString("Test"))
-        exprTest(" \"Test\"  ", CarbonString("Test"))
-        exprTest("\"Test with spaces\"", CarbonString("Test with spaces"))
+        exprTest("\"Test\"", wrapString("Test"))
+        exprTest(" \"Test\"  ", wrapString("Test"))
+        exprTest("\"Test with spaces\"", wrapString("Test with spaces"))
     }
 
     @Test
     fun newlines() {
-        exprTest("\"\\n\"", CarbonString("\n"))
-        exprTest("\"one\\ntwo\"", CarbonString("one\ntwo"))
+        exprTest("\"\\n\"", wrapString("\n"))
+        exprTest("\"one\\ntwo\"", wrapString("one\ntwo"))
     }
 
     @Test
     fun unicode() {
-        exprTest("\"السلام عليكم\"", CarbonString("السلام عليكم"))
-        exprTest("\"Dobrý den\"", CarbonString("Dobrý den"))
-        exprTest("\"Hello\"", CarbonString("Hello"))
-        exprTest("\"שָׁלוֹם\"", CarbonString("שָׁלוֹם"))
-        exprTest("\"नमस्ते\"", CarbonString("नमस्ते"))
-        exprTest("\"こんにちは\"", CarbonString("こんにちは"))
-        exprTest("\"你好\"", CarbonString("你好"))
-        exprTest("\"Olá\"", CarbonString("Olá"))
-        exprTest("\"Здравствуйте\"", CarbonString("Здравствуйте"))
-        exprTest("\"Hola\"", CarbonString("Hola"))
+        exprTest("\"السلام عليكم\"", wrapString("السلام عليكم"))
+        exprTest("\"Dobrý den\"", wrapString("Dobrý den"))
+        exprTest("\"Hello\"", wrapString("Hello"))
+        exprTest("\"שָׁלוֹם\"", wrapString("שָׁלוֹם"))
+        exprTest("\"नमस्ते\"", wrapString("नमस्ते"))
+        exprTest("\"こんにちは\"", wrapString("こんにちは"))
+        exprTest("\"你好\"", wrapString("你好"))
+        exprTest("\"Olá\"", wrapString("Olá"))
+        exprTest("\"Здравствуйте\"", wrapString("Здравствуйте"))
+        exprTest("\"Hola\"", wrapString("Hola"))
     }
 
     @Test
     fun expression() {
-        exprTest("String(\"text\")", CarbonString("text"))
+        exprTest("String(\"text\")", wrapString("text"))
         envTest("""
             S = "test"
             R = String(S)
-        """, "R", CarbonString("test"))
+        """, "R", wrapString("test"))
     }
 
     @Test
     fun infixOperators() {
-        exprTest("\"hey\" + \" there\"", CarbonString("hey there"))
-        exprTest("\"what is \" + \"up \" + \"my dudes?\"", CarbonString("what is up my dudes?"))
+        exprTest("\"hey\" + \" there\"", wrapString("hey there"))
+        exprTest("\"what is \" + \"up \" + \"my dudes?\"", wrapString("what is up my dudes?"))
     }
 }

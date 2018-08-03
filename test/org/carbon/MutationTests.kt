@@ -1,7 +1,8 @@
 package org.carbon
 
-import org.carbon.runtime.CarbonInteger
+import org.carbon.runtime.CarbonBoolean
 import org.carbon.syntax.wrapInteger
+import org.carbon.syntax.wrapString
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,6 +18,25 @@ class MutationTests {
                 Num := 5
         """, "ChangeNum", "Num", wrapInteger(5))
     }
+
+    @Test
+    fun stringMutation() {
+        mutTest("""
+            Str = Reg("Hahaha")
+            ChangeStr =
+                Str := "Lol"
+        """, "ChangeStr", "Str", wrapString("Lol"))
+    }
+
+    // Need Enumeration types for this
+//    @Test
+//    fun boolMutation() {
+//        mutTest("""
+//            Bool = Reg(True)
+//            Change =
+//                Bool := False
+//        """, "Change", "Bool", CarbonBoolean(false))
+//    }
 
 //    @Test
 //    fun mutateAndOperation() {
