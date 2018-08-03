@@ -9,7 +9,6 @@ compilationUnit
 statement
     // Can this grammar rule be simplified?
     // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
-    //: declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')? '=' expression
     : variable_declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
         (guards+=guard)*
         '=' default_expression=expression
@@ -22,6 +21,7 @@ expression
     | base=expression '(' first_argument=expression? other_arguments+=expression_item* ')' # ApplicationExpression
     | lhs=expression symbol1 rhs=expression # InfixExpression // Break into two to support prescidence at the syntax level
     | lhs=expression symbol2 rhs=expression # InfixExpression // I would like to make the symbol assigned to a variable 'op', but because the symbol is two seperate syntax nodes, this cannot be done.
+    | lhs=expression symbol3 rhs=expression # InfixExpression
     | base=expression '.' identifier # DotExpression
     | terminalExpression # Terminal
     ;
@@ -64,6 +64,8 @@ symbol1 : SYMBOL1;
 symbol2 : ((SYMBOL2 | ':' | '|' | '-') (SYMBOL1 | SYMBOL2 | ':' | '|' | '-' | '=')*)
         | ('=' (SYMBOL1 | SYMBOL2 | ':' | '|' | '-' | '=')+);
 
+symbol3 : SYMBOL3;
+
 type
     : identifier ('[' refinement_list ']')?
     ;
@@ -81,6 +83,6 @@ refinement         // What about Size == 5
 
 identifier
     : LABEL
-    | symbol1 | symbol2 // Is this even an identifier?
+    | symbol1 | symbol2 | symbol3 // Is this even an identifier?
     //: LABEL ('.' LABEL)* // Just one level?
     ;

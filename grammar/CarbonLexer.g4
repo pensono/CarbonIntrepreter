@@ -12,8 +12,9 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
     NUMBER:        Digit (Letter | Digit)*;
     STRING:        '"' (~["\\\r\n] | '\\n')*? '"';
 
-    SYMBOL1:       '*' | '/'; // To support two levels of precedence
-    SYMBOL2:       '+' | '&' | '<' | '>' | ';';
+    SYMBOL1:       '*' | '/' ; // To support multiple levels of precedence
+    SYMBOL2:       '+' | '&' | '<' | '>';
+    SYMBOL3:       ';';
 
 //    GRAMMAR:       GrammarPart;
 

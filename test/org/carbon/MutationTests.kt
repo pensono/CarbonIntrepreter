@@ -38,6 +38,27 @@ class MutationTests {
 //        """, "Change", "Bool", CarbonBoolean(false))
 //    }
 
+    @Test
+    fun sequenceOperator() {
+        mutTest("""
+            Num = Reg(4)
+            ChangeNum =
+                Num := 5;
+                Num := 6
+        """, "ChangeNum", "Num", wrapInteger(6))
+    }
+
+
+    @Test
+    fun sequenceOperatorVars() {
+        mutTest("""
+            Num = Reg(4)
+            Change5 = Num := 5
+            Change6 = Num := 6
+            Changes = Change5; Change6
+        """, "Changes", "Num", wrapInteger(6))
+    }
+
 //    @Test
 //    fun mutateAndOperation() {
 //        mutTest("""
