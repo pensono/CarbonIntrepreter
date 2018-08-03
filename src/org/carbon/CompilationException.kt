@@ -5,4 +5,5 @@ import org.antlr.v4.runtime.misc.Interval
 /**
  * @author Ethan
  */
-class CompilationException(message: String, location: Interval) : Exception(message)
+// Interval is nullable for the convenience of writing error messages
+class CompilationException(message: String, location: Interval? = null) : Exception(message)

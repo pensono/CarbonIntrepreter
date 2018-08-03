@@ -24,11 +24,16 @@ fun compile(input: CharStream, environment: RootScope) : RootScope? {
         return null
     }
 
+    val newMembers = mutableSetOf<String>()
     for (statement in parser.compilationUnit().statement()) {
         val compiledStatement = StatementVisitor(environment).visit(statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
         val body = CarbonExpression(environment, compiledStatement.body, formalParameters = compiledStatement.formalParameters)
+        newMembers.add(compiledStatement.name)
         environment.putMember(compiledStatement.name, body)
     }
+
+    // Really shitty way of resolving out of order dependencies
+    newMembers.forEach { m -> environment.putMember(m, environment.lookupName(m)!!.eval()) }
 
     // TODO return a modified version of the environment?
     return environment

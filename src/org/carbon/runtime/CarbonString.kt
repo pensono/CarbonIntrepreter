@@ -12,7 +12,7 @@ private fun generateOperators(expr: CarbonString) = mapOf(
 )
 
 private fun stringMagma(base: CarbonString, opName: String, operation: (String, String) -> String) =
-        OperatorExpression(base, opName, operation, CarbonString::value, ::CarbonString)
+        WrappedOperatorExpression(base, opName, operation, CarbonString::value, ::CarbonString)
 
 object StringType : CarbonExpression() {
     override fun getShortString(): String = "String Type"

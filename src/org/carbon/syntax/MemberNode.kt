@@ -13,7 +13,7 @@ import org.carbon.runtime.CarbonScope
 class MemberNode(private val location: Interval, private val base: Node, private val memberName: String) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression {
         val evaluatedBase = base.link(scope).eval()
-        return evaluatedBase.getMember(memberName) ?: throw CompilationException("Member $memberName not found in $evaluatedBase", location)
+        return evaluatedBase.getMember(memberName)?.eval() ?: throw CompilationException("Member $memberName not found in $evaluatedBase", location)
     }
 
     override fun getShortString(): String = "Member Node. Member name: $memberName. Base:"

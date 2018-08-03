@@ -1,6 +1,6 @@
 package org.carbon
 
-import org.carbon.runtime.CarbonInteger
+import org.carbon.syntax.wrapInteger
 import org.junit.Assert
 import org.junit.Test
 
@@ -30,20 +30,20 @@ class TypeLiteralTests {
             Point3D = Point : { Z: Integer } // Horrible example of subclassing
             P = Point3D(1,2,3)
             R = P.Z
-        """, "R", CarbonInteger(3))
+        """, "R", wrapInteger(3))
     }
 
     // TODO test squash between Integer and an arbitrary type
 
     @Test
     fun applicationSingleArg() {
-        exprTest("{A:Integer}(2).A", CarbonInteger(2))
+        exprTest("{A:Integer}(2).A", wrapInteger(2))
     }
 
     @Test
     fun applicationMultipleArg() {
-        exprTest("{A:Integer,B:Integer}(2,3).A", CarbonInteger(2))
-        exprTest("{A:Integer,B:Integer}(2,3).B", CarbonInteger(3))
+        exprTest("{A:Integer,B:Integer}(2,3).A", wrapInteger(2))
+        exprTest("{A:Integer,B:Integer}(2,3).B", wrapInteger(3))
     }
 
     @Test(expected = CompilationException::class)
@@ -60,7 +60,7 @@ class TypeLiteralTests {
                 Area = Width * Height,
             }
             R = Rectangle(3,4).Area
-        """, "R", CarbonInteger(12))
+        """, "R", wrapInteger(12))
     }
 
     @Test
@@ -72,7 +72,7 @@ class TypeLiteralTests {
                 SuperArea(Integer) = Width * Height * Integer
             }
             R = Rectangle(3,4).SuperArea(5)
-        """, "R", CarbonInteger(60))
+        """, "R", wrapInteger(60))
     }
 
     @Test
@@ -85,7 +85,7 @@ class TypeLiteralTests {
                 SuperArea = Width * Height * Factor,
             }
             R = Rectangle(3,4).SuperArea
-        """, "R", CarbonInteger(48))
+        """, "R", wrapInteger(48))
     }
 
     // TODO check names being used twice

@@ -12,8 +12,8 @@ import org.carbon.runtime.CarbonScope
  */
 class AppliedNode(private val location: Interval, private val base: Node, private val actualParameters: List<Node?>) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression {
-        val baseExpr = base.link(scope).eval()
-        val evaluatedParameters = actualParameters.map { n -> n?.link(scope)?.eval() }
+        val baseExpr = base.link(scope)
+        val evaluatedParameters = actualParameters.map { n -> n?.link(scope) }
 
         return baseExpr.apply(evaluatedParameters).eval()
     }
@@ -22,6 +22,4 @@ class AppliedNode(private val location: Interval, private val base: Node, privat
     override fun getBodyString(level: Int): String =
             indented(level, "Base:") + base.getFullString(level + 1) + "\n" +
             indented(level, "Actual Parameters:") + fullString(level + 1, actualParameters)
-
 }
-

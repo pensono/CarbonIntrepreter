@@ -12,7 +12,7 @@ import org.carbon.runtime.CarbonScope
 class IdentifierNode(private val location: Interval, private val name: String) : Node() {
     //override fun lookupName(name: String): Node? = scope.lookupName(this.name)?.lookupName(name)
     override fun link(scope: CarbonScope): CarbonExpression =
-            scope.lookupName(name) ?: throw CompilationException("Identifier $name not found in scope:\n$scope", location)
+            scope.lookupName(name)?.eval() ?: throw CompilationException("Identifier $name not found in scope:\n$scope", location)
 
     override fun getShortString(): String = "Identifier Expression. Name: $name"
 }

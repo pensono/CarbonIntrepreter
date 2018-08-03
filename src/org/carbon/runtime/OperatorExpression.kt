@@ -7,7 +7,7 @@ import org.carbon.CarbonException
  * @param <CET> CarbonExpression type of the input
  * @param <CER> CrabonExpression type of the output
  */
-class OperatorExpression<out CET: CarbonExpression, out CER: CarbonExpression, T, R>(
+class WrappedOperatorExpression<out CET: CarbonExpression, out CER: CarbonExpression, T, R>(
         val base: CET,
         val operatorName: String,
         private val operator: (T, T) -> R,
@@ -19,10 +19,26 @@ class OperatorExpression<out CET: CarbonExpression, out CER: CarbonExpression, T
         assert(arguments.size == 1)
 
         val wrappedLhs = arguments[0] as? CET ?: throw CarbonException("Parameter does not have the correct underlying type")
-        val lhs = unwrapper(wrappedLhs)
         val rhs = unwrapper(base)
+        val lhs = unwrapper(wrappedLhs)
 
         return wrapper(operator(rhs, lhs))
+    }
+
+    override fun getShortString(): String = "Operator $operatorName"
+    override fun getBodyString(level: Int): String = ""
+}
+
+class OperatorExpression(
+        val base: CarbonExpression,
+        val operatorName: String,
+        private val operator: (CarbonExpression, CarbonExpression) -> CarbonExpression
+) : CarbonExpression(formalParameters = listOf("lhs")) {
+
+    override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
+        assert(arguments.size == 1)
+
+        return operator(base, arguments[0]!!)
     }
 
     override fun getShortString(): String = "Operator $operatorName"

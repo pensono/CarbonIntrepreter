@@ -19,10 +19,10 @@ private fun generateOperators(expr: CarbonInteger) = mapOf(
 )
 
 private fun integerMagma(base: CarbonInteger, opName: String, operation: (Int, Int) -> Int) =
-        OperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonInteger)
+        WrappedOperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonInteger)
 
 private fun integerRelation(base: CarbonInteger, opName: String, operation: (Int, Int) -> Boolean) =
-        OperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonBoolean)
+        WrappedOperatorExpression(base, opName, operation, CarbonInteger::value, ::CarbonBoolean)
 
 object IntegerType : CarbonExpression() {
     override fun getShortString(): String = "Integer Type"
@@ -31,7 +31,8 @@ object IntegerType : CarbonExpression() {
 //        if (arguments.size != 1) // TODO something more robust (maybe a type system?)
 //            throw CompilationException("Not the correct number of arguments for creating an int")
 
-        val parameter = arguments[0] as CarbonInteger // TODO throw if not an int (use a type system?)
-        return CarbonInteger(parameter.value)
+//        val parameter = arguments[0] as CarbonInteger // TODO throw if not an int (use a type system?)
+//        return CarbonInteger(parameter.value)
+        return arguments[0]!!
     }
 }

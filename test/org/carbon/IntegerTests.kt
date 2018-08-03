@@ -1,7 +1,7 @@
 package org.carbon
 
 import org.carbon.runtime.CarbonBoolean
-import org.carbon.runtime.CarbonInteger
+import org.carbon.syntax.wrapInteger
 import org.junit.Test
 
 /**
@@ -12,49 +12,49 @@ import org.junit.Test
 class IntegerTests {
     @Test
     fun literals() {
-        exprTest("1", CarbonInteger(1))
-        exprTest("34", CarbonInteger(34))
-        exprTest("137", CarbonInteger(137))
-        exprTest("-1", CarbonInteger(-1))
-        exprTest("-34", CarbonInteger(-34))
-        exprTest("-137", CarbonInteger(-137))
+        exprTest("1", wrapInteger(1))
+        exprTest("34", wrapInteger(34))
+        exprTest("137", wrapInteger(137))
+        exprTest("-1", wrapInteger(-1))
+        exprTest("-34", wrapInteger(-34))
+        exprTest("-137", wrapInteger(-137))
         // TODO Decimal numbers
     }
 
     @Test
     fun expression() {
-        exprTest("Integer(1)", CarbonInteger(1))
+        exprTest("Integer(1)", wrapInteger(1))
         envTest("""
             I = 3
             R = Integer(I)
-        """, "R", CarbonInteger(3))
+        """, "R", wrapInteger(3))
     }
 
 
     @Test
     fun addition() {
-        exprTest("1+1", CarbonInteger(2))
-        exprTest("34+57", CarbonInteger(91))
-        exprTest("-34+57", CarbonInteger(23))
-        exprTest("1+1+2", CarbonInteger(4))
+        exprTest("1+1", wrapInteger(2))
+        exprTest("34+57", wrapInteger(91))
+        exprTest("-34+57", wrapInteger(23))
+        exprTest("1+1+2", wrapInteger(4))
     }
 
     @Test
     fun subtraction() {
-        exprTest("1-1", CarbonInteger(0))
-        exprTest("1- 1", CarbonInteger(0))
-        exprTest("1 -1", CarbonInteger(0))
-        exprTest("1 - 1", CarbonInteger(0))
-        exprTest("34-57", CarbonInteger(-23))
-        exprTest("-34-57", CarbonInteger(-91))
-        exprTest("1-1-2", CarbonInteger(-2))
+        exprTest("1-1", wrapInteger(0))
+        exprTest("1- 1", wrapInteger(0))
+        exprTest("1 -1", wrapInteger(0))
+        exprTest("1 - 1", wrapInteger(0))
+        exprTest("34-57", wrapInteger(-23))
+        exprTest("-34-57", wrapInteger(-91))
+        exprTest("1-1-2", wrapInteger(-2))
     }
 
     @Test
     fun orderOfOperations() {
-        exprTest("1+2*3", CarbonInteger(7))
-        exprTest("2*3+1", CarbonInteger(7))
-        exprTest("1-1-2*4", CarbonInteger(-8))
+        exprTest("1+2*3", wrapInteger(7))
+        exprTest("2*3+1", wrapInteger(7))
+        exprTest("1-1-2*4", wrapInteger(-8))
     }
 
     @Test

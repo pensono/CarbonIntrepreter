@@ -4,6 +4,7 @@ import org.carbon.fullString
 import org.carbon.runtime.CarbonExpression
 import org.carbon.runtime.CarbonScope
 import org.carbon.runtime.OperatorExpression
+import org.carbon.runtime.WrappedOperatorExpression
 
 /**
  * @author Ethan
@@ -18,15 +19,14 @@ class ArbitraryTypeNode(
         val parameterNames = instanceMembers.map { p -> p.first }
 
         return CarbonExpression(scope, ArbitraryInstanceNode(instanceMembers, derivedMembers), formalParameters = parameterNames, memberCallback = { expr ->
-            mapOf(":" to OperatorExpression(expr, "squash",
-                    { lhs, rhs ->
-                        CarbonExpression(
-                                scope,
-                                null, // What should body be?
-                                lhs.derivedMembers + rhs.derivedMembers,
-                                lhs.actualParameters + rhs.actualParameters,
-                                lhs.formalParameters + rhs.formalParameters)
-                    }, { it }, { x: CarbonExpression -> x })) // The typechecker needs a type here
+            mapOf(":" to OperatorExpression(expr, "squash") { lhs, rhs ->
+                CarbonExpression(
+                        scope,
+                        null, // What should body be?
+                        lhs.derivedMembers + rhs.derivedMembers,
+                        lhs.actualParameters + rhs.actualParameters,
+                        lhs.formalParameters + rhs.formalParameters)
+            })
         })
     }
 
