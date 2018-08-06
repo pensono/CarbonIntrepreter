@@ -1,7 +1,6 @@
 package org.carbon
 
 import org.carbon.syntax.wrapInteger
-import org.junit.Assert
 import org.junit.Test
 
 /**

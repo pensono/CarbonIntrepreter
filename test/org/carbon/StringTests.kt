@@ -3,8 +3,6 @@ package org.carbon
 import org.carbon.syntax.wrapString
 import org.junit.Test
 
-import org.junit.Assert.*
-
 /**
  * @author Ethan Shea
  * *

@@ -1,7 +1,5 @@
 package org.carbon.runtime
 
-import org.carbon.CompilationException
-import org.carbon.fullString
 import org.carbon.indented
 
 
@@ -23,20 +21,6 @@ class CarbonRegister(initialValue: CarbonExpression) : CarbonExpression(body = i
 
     override fun equals(other: Any?): Boolean = value == other
     override fun hashCode(): Int = value.hashCode() xor 0xCB1337
-}
-
-object RegisterType : CarbonExpression() {
-    override fun getShortString(): String = "Register Type"
-
-    override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
-        if (arguments.size != 1) // TODO something more robust (maybe a type system?)
-            throw CompilationException("Not the correct number of arguments for creating a register")
-
-        val arg = arguments[0]
-
-        return CarbonRegister(arguments[0]!!)
-    }
-
 }
 
 private fun registerOperations(expr: CarbonExpression) = mapOf(

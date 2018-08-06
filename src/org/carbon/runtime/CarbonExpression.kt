@@ -1,6 +1,5 @@
 package org.carbon.runtime
 
-import org.carbon.CarbonException
 import org.carbon.PrettyPrintable
 import org.carbon.fullString
 import org.carbon.indented

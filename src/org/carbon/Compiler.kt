@@ -7,11 +7,9 @@ import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
 import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonRegister
 import org.carbon.runtime.CarbonScope
 import org.carbon.runtime.RootScope
 import org.carbon.syntax.*
-import javax.swing.plaf.nimbus.State
 
 /**
  * @author Ethan Shea

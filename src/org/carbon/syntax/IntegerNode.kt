@@ -1,6 +1,8 @@
 package org.carbon.syntax
 
-import org.carbon.runtime.*
+import org.carbon.runtime.CarbonBoolean
+import org.carbon.runtime.CarbonExpression
+import org.carbon.runtime.WrappedOperatorExpression
 
 /**
  * @author Ethan Shea

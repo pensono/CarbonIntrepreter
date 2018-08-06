@@ -1,9 +1,7 @@
 package org.carbon
 
-import org.carbon.runtime.CarbonBoolean
 import org.carbon.syntax.wrapInteger
 import org.carbon.syntax.wrapString
-import org.junit.Assert
 import org.junit.Test
 
 /**
