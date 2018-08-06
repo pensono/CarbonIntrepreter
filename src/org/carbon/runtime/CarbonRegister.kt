@@ -1,20 +1,29 @@
 package org.carbon.runtime
 
 import org.carbon.CompilationException
-import org.carbon.syntax.Node
+import org.carbon.fullString
+import org.carbon.indented
 
 
 // Does this make sense as a subclass?
-class CarbonRegister(initialValue: Node) : CarbonExpression(body = initialValue, memberCallback = ::registerOperations) {
-    fun update(newValue: Node) {
-        body = newValue
+class CarbonRegister(initialValue: CarbonExpression) : CarbonExpression(body = initialValue.body, memberCallback = ::registerOperations) {
+    var value = initialValue
+
+    fun update(newValue: CarbonExpression) {
+        value = newValue
+        body = newValue.body // Is this the right thing to do?
     }
 
+    override fun getMember(name: String): CarbonExpression? = super.getMember(name) ?: value.getMember(name)
+
     override fun getShortString(): String = "Carbon Register"
+    override fun getBodyString(level: Int): String = indented(level, "Value:") + (value.getFullString(level + 1))
 
     override fun eval(): CarbonExpression = this
-}
 
+    override fun equals(other: Any?): Boolean = value == other
+    override fun hashCode(): Int = value.hashCode() xor 0xCB1337
+}
 
 object RegisterType : CarbonExpression() {
     override fun getShortString(): String = "Register Type"
@@ -25,7 +34,7 @@ object RegisterType : CarbonExpression() {
 
         val arg = arguments[0]
 
-        return CarbonRegister(arguments[0]!!.body!!)
+        return CarbonRegister(arguments[0]!!)
     }
 
 }

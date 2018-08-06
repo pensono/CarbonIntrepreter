@@ -1,5 +1,6 @@
 package org.carbon.runtime
 
+import org.carbon.CarbonException
 import org.carbon.PrettyPrintable
 import org.carbon.fullString
 import org.carbon.indented
@@ -42,11 +43,11 @@ open class CarbonExpression(
     }
 
     open fun eval() : CarbonExpression =
-            if (formalParameters.isEmpty() && body != null) {
-                 body!!.link(this)
-            } else {
-                this // Basically don't evaluate until fully applied
-            }
+        if (formalParameters.isEmpty() && body != null) {
+             body!!.link(this)
+        } else {
+            this // Basically don't evaluate until fully applied
+        }
 
     // TODO check for collisions between actualParameters and derivedMembers, or assert that keys are unique
     override fun lookupName(name: String): CarbonExpression? =

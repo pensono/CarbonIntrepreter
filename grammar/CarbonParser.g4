@@ -9,9 +9,9 @@ compilationUnit
 statement
     // Can this grammar rule be simplified?
     // hasParameterList is a horrible solution to determining if parens were used, but the only one I can think of
-    : variable_declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
+    : isReg='reg'? variable_declaration (hasParameterList='(' (parameters+=parameter (',' parameters+=parameter)*)? ')')?
         (guards+=guard)*
-        '=' default_expression=expression
+        '=' body=expression
     ;
 
 guard : '|' predicate=expression '=' body=expression;

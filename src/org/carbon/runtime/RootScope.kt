@@ -10,7 +10,6 @@ import org.carbon.fullString
 // Refactor this to be immutable? It can also be an object if its immutable
 class RootScope : CarbonScope() {
     val members: MutableMap<String, CarbonExpression> = mutableMapOf(
-            "Reg" to RegisterType,
             "Integer" to IntegerType,
             "String" to StringType,
             "Boolean" to BooleanType,

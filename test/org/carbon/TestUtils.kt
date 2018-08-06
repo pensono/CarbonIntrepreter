@@ -31,6 +31,9 @@ fun testEnvEval(input: String, member: String) : CarbonExpression {
 fun mutTest(input: String, mutator: String, member: String, expected: CarbonExpression) {
     val scope = compile(CharStreams.fromString(input), RootScope())!!
     val monad = scope.lookupName(mutator)!!.eval() as CarbonMonad
+
     monad.execute()
-    Assert.assertEquals(expected, scope.lookupName(member)!!.eval())
+
+    val actual = scope.lookupName(member)!!.eval()
+    Assert.assertEquals(expected, actual)
 }

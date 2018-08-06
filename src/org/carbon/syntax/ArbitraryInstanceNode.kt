@@ -14,10 +14,9 @@ class ArbitraryInstanceNode(
     override fun link(scope: CarbonScope): CarbonExpression {
         val members = instanceMembers.associate { m -> m.first to scope.getMember(m.first)!! }
         return CarbonExpression(scope, actualParameters = members, memberCallback = {expr ->
-            derivedMembers.associate { s -> s.name to CarbonExpression(expr, s.body, formalParameters = s.formalParameters) }
+            derivedMembers.associate { s -> s.name to s.link(expr) }
         })
     }
 
     override fun getShortString(): String = "Arbitrary Instance Node"
-
 }

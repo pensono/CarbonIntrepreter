@@ -14,7 +14,7 @@ class CompositeMonad(val first: CarbonMonad, val second: CarbonMonad) : CarbonMo
 // Should rhs be Node?
 class AssignmentMonad(val lhs: CarbonRegister, val rhs: CarbonExpression) : CarbonMonad(){
     override fun execute() {
-        lhs.update(rhs.body!!)
+        lhs.update(rhs)
     }
 }
 

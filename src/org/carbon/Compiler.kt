@@ -7,6 +7,7 @@ import org.carbon.parser.CarbonLexer
 import org.carbon.parser.CarbonParser
 import org.carbon.parser.CarbonParserBaseVisitor
 import org.carbon.runtime.CarbonExpression
+import org.carbon.runtime.CarbonRegister
 import org.carbon.runtime.CarbonScope
 import org.carbon.runtime.RootScope
 import org.carbon.syntax.*
@@ -24,16 +25,12 @@ fun compile(input: CharStream, environment: RootScope) : RootScope? {
         return null
     }
 
-    val newMembers = mutableSetOf<String>()
     for (statement in parser.compilationUnit().statement()) {
         val compiledStatement = StatementVisitor(environment).visit(statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
-        val body = CarbonExpression(environment, compiledStatement.body, formalParameters = compiledStatement.formalParameters)
-        newMembers.add(compiledStatement.name)
+        val body = compiledStatement.link(environment)
+
         environment.putMember(compiledStatement.name, body)
     }
-
-    // Really shitty way of resolving out of order dependencies
-    newMembers.forEach { m -> environment.putMember(m, environment.lookupName(m)!!.eval()) }
 
     // TODO return a modified version of the environment?
     return environment
@@ -119,7 +116,7 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
 
 class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Statement>() {
     override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
-        var body = NodeVisitor(lexicalScope).visit(ctx.default_expression)
+        var body = NodeVisitor(lexicalScope).visit(ctx.body)
 
         // Wrap body in BranchNodes for each guard (if any)
         for (guard in ctx.guards.reversed()) {
@@ -134,7 +131,10 @@ class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<
         } else {
             listOf()
         }
-        return Statement(ctx.variable_declaration().text, body, parameterNames)
+
+        val isReg = ctx.isReg != null
+
+        return Statement(ctx.variable_declaration().text, body, parameterNames, isReg)
     }
 }
 

@@ -13,7 +13,7 @@ class MutationTests {
     @Test
     fun basicMutation() {
         mutTest("""
-            Num = Reg(4)
+            reg Num = 4
             ChangeNum = // Monads :D
                 Num := 5
         """, "ChangeNum", "Num", wrapInteger(5))
@@ -22,7 +22,7 @@ class MutationTests {
     @Test
     fun stringMutation() {
         mutTest("""
-            Str = Reg("Hahaha")
+            reg Str = "Hahaha"
             ChangeStr =
                 Str := "Lol"
         """, "ChangeStr", "Str", wrapString("Lol"))
@@ -41,7 +41,7 @@ class MutationTests {
     @Test
     fun sequenceOperator() {
         mutTest("""
-            Num = Reg(4)
+            reg Num = 4
             ChangeNum =
                 Num := 5;
                 Num := 6
@@ -52,20 +52,40 @@ class MutationTests {
     @Test
     fun sequenceOperatorVars() {
         mutTest("""
-            Num = Reg(4)
+            reg Num = 4
             Change5 = Num := 5
             Change6 = Num := 6
             Changes = Change5; Change6
         """, "Changes", "Num", wrapInteger(6))
     }
 
+    @Test
+    fun indirectlyObserveMutation() {
+        mutTest("""
+            reg Num = 4
+            OtherNum = Num + 2
+            ChangeNum =
+                Num := 5
+        """, "ChangeNum", "OtherNum", wrapInteger(7))
+    }
+
+    @Test
+    fun mutateAndOperation() {
+        mutTest("""
+            reg Num = 4
+            ChangeNum = // Monads :D
+                Num := 5
+            OtherNum = Num + 1
+        """, "ChangeNum", "OtherNum", wrapInteger(6))
+    }
+
 //    @Test
-//    fun mutateAndOperation() {
+//    fun mutateMember() {
 //        mutTest("""
-//            Num = Reg(4)
-//            ChangeNum = // Monads :D
-//                Num := 5
-//            OtherNum = Num + 1
-//        """, "ChangeNum", "OtherNum", wrapInteger(6))
+//            reg Obj = {reg Num = 4}
+//            ChangeNum =
+//                Obj.Num := 5
+//            R = Obj.Num
+//        """, "ChangeNum", "R", wrapInteger(5))
 //    }
 }

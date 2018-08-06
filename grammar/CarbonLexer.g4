@@ -6,7 +6,7 @@ WS:                 [ \t\r\n\u000C]+ -> skip;
 COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
 LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
-// Identifiers
+REG: 'reg';
 
     LABEL:         Letter (Letter | Digit)*;
     NUMBER:        Digit (Letter | Digit)*;
