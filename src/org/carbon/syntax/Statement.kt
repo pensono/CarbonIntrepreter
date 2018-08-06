@@ -15,7 +15,7 @@ class Statement(val name: String, val body: Node, val formalParameters: List<Str
     override fun link(scope: CarbonScope) : CarbonExpression {
         val body = CarbonExpression(scope, body, formalParameters = formalParameters)
         return if (isRegister) {
-             CarbonRegister(body)
+             CarbonRegister(body.eval()) // This eval may be too early
         } else {
             body
         }

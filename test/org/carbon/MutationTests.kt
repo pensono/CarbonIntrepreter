@@ -79,13 +79,13 @@ class MutationTests {
         """, "ChangeNum", "OtherNum", wrapInteger(6))
     }
 
-//    @Test
-//    fun mutateMember() {
-//        mutTest("""
-//            reg Obj = {reg Num = 4}
-//            ChangeNum =
-//                Obj.Num := 5
-//            R = Obj.Num
-//        """, "ChangeNum", "R", wrapInteger(5))
-//    }
+    @Test
+    fun mutateMember() {
+        mutTest("""
+            reg Obj = {reg Num = 4}()
+            ChangeNum =
+                Obj.Num := 5
+            R = Obj.Num
+        """, "ChangeNum", "R", wrapInteger(5))
+    }
 }
