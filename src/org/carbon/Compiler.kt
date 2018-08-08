@@ -95,7 +95,7 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         return AppliedNode(ctx.sourceInterval, base, args)
     }
 
-    override fun visitTypeLiteral(ctx: CarbonParser.TypeLiteralContext): Node {
+    override fun visitProductType(ctx: CarbonParser.ProductTypeContext): Node {
         val members = toParameterList(lexicalScope, ctx.members!!)
 
         // This transformation code is bad.
@@ -105,6 +105,14 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         val derivedMembers = ctx.derivedMembers.map(statementVisitor::visit).filterNotNull() // Null filter should be a no-op
 
         return ArbitraryTypeNode(members, derivedMembers)
+    }
+
+    override fun visitSumType(ctx: CarbonParser.SumTypeContext): Node {
+        val options = ctx.enumOption()!!.associate { opt ->
+            opt.name.text!! to opt.type()?.accept(this)
+        }
+
+        return SumTypeNode(options)
     }
 
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): Node {

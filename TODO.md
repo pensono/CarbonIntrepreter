@@ -1,5 +1,3 @@
-- Registers
-- Mutators
 - Enumeration Types
 - Sum Types
 - An actual type system

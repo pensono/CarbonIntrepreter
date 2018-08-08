@@ -41,8 +41,12 @@ terminalExpression
     ;
 
 typeLiteral
-    : '{' ((members+=parameter | derivedMembers+=statement) (',' (members+=parameter | derivedMembers+=statement))* ','?) ? '}'
-    //| enum_list
+    : '{' ((members+=parameter | derivedMembers+=statement) (',' (members+=parameter | derivedMembers+=statement))* ','?) ? '}' #ProductType
+    | enumOption+ #SumType // Like a statement, but not quite. It would be great if those were the same
+    ;
+
+enumOption
+    : '|' name=LABEL ('=' type)?
     ;
 
 numberLiteral: '-'? NUMBER;
@@ -68,6 +72,7 @@ symbol3 : SYMBOL3;
 
 type
     : identifier ('[' refinement_list ']')?
+    | typeLiteral
     ;
 
 refinement_list
