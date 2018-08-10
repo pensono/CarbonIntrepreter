@@ -1,5 +1,3 @@
-- Enumeration Types
-- Sum Types
 - An actual type system
 - Variable declarations with types
 - Match expressions (alternative to guards?)

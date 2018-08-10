@@ -19,10 +19,10 @@ guard : '|' predicate=expression '=' body=expression;
 expression
     : typeLiteral # Terminal
     | base=expression '(' first_argument=expression? other_arguments+=expression_item* ')' # ApplicationExpression
+    | base=expression '.' identifier # DotExpression
     | lhs=expression symbol1 rhs=expression # InfixExpression // Break into two to support prescidence at the syntax level
     | lhs=expression symbol2 rhs=expression # InfixExpression // I would like to make the symbol assigned to a variable 'op', but because the symbol is two seperate syntax nodes, this cannot be done.
     | lhs=expression symbol3 rhs=expression # InfixExpression
-    | base=expression '.' identifier # DotExpression
     | terminalExpression # Terminal
     ;
 

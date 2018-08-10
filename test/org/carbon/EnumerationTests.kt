@@ -20,5 +20,16 @@ class EnumerationTests {
         // TODO add test case for false. (requires not equals operator)
     }
 
+    @Test
+    fun complexEnum() {
+        envTest("""
+            Tree = | Leaf
+                   | Stem = { Left: Tree, Right: Tree }
+            MyTree = Tree.Stem(Tree.Leaf, Tree.Stem(Tree.Leaf, Tree.Leaf))
+            R = MyTree.Left == MyTree.Right.Left
+        """, "R", CarbonBoolean(true))
+        // TODO add test case for false. (requires not equals operator)
+    }
+
     // TODO tests for more complicated enumerations
 }

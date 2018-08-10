@@ -23,8 +23,9 @@ fun compile(input: CharStream, environment: RootScope) : RootScope? {
         return null
     }
 
+    val visitor = NodeVisitor(environment)
     for (statement in parser.compilationUnit().statement()) {
-        val compiledStatement = StatementVisitor(environment).visit(statement) ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval)
+        val compiledStatement = visitor.visitStatement(statement) // ?: throw CompilationException("Failed to compile " + statement.text, statement.sourceInterval) // This part necessary? How are errors handled/do they need to be?
         val body = compiledStatement.link(environment)
 
         environment.putMember(compiledStatement.name, body)
@@ -101,8 +102,8 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
         // This transformation code is bad.
         assert(!ctx.derivedMembers.contains(null))
 
-        val statementVisitor = StatementVisitor(lexicalScope)
-        val derivedMembers = ctx.derivedMembers.map(statementVisitor::visit).filterNotNull() // Null filter should be a no-op
+        // Is there a way visit can be used in place of visitStatement? ArbitraryTypeNode's signature would also have to change
+        val derivedMembers = ctx.derivedMembers.mapNotNull(this::visitStatement) // Null filter should be a no-op
 
         return ArbitraryTypeNode(members, derivedMembers)
     }
@@ -118,9 +119,7 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
     override fun visitIdentifier(ctx: CarbonParser.IdentifierContext): Node {
         return IdentifierNode(ctx.sourceInterval, ctx.text)
     }
-}
 
-class StatementVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Statement>() {
     override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
         var body = NodeVisitor(lexicalScope).visit(ctx.body)
 

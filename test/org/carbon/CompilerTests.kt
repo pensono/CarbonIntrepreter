@@ -40,6 +40,16 @@ class CompilerTests {
     }
 
     @Test
+    fun dotsOnBothSides() {
+        envTest("""
+            T = { Member = {Integer = 1}() }
+            A = T()
+            B = T()
+            R = A.Member.Integer + B.Member.Integer
+        """, "R", wrapInteger(2))
+    }
+
+    @Test
     fun nestedScopes() {
         envTest("""
             E = 5
