@@ -42,14 +42,14 @@ private fun preparseInput(input: CharStream): CarbonParser {
     return parser
 }
 
-fun compileExpression(input: CharStream) : Node? {
+fun compileExpression(input: CharStream, scope: CarbonScope) : Node? {
     val parser = preparseInput(input)
     val expressionAst = parser.expression()
-    return NodeVisitor(RootScope()).visit(expressionAst)
+    return NodeVisitor(scope).visit(expressionAst)
 }
 
 fun evaluate(input: String, scope: CarbonScope) : CarbonExpression? {
-    val expression = compileExpression(CharStreams.fromString(input))
+    val expression = compileExpression(CharStreams.fromString(input), RootScope())
     return expression?.link(scope)?.eval()
 }
 

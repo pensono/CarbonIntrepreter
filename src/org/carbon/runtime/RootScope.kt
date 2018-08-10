@@ -1,6 +1,9 @@
 package org.carbon.runtime
 
+import org.antlr.v4.runtime.CharStreams
+import org.carbon.compileExpression
 import org.carbon.fullString
+import java.io.File
 
 /**
  * @author Ethan Shea
@@ -11,11 +14,16 @@ import org.carbon.fullString
 class RootScope : CarbonScope() {
     val members: MutableMap<String, CarbonExpression> = mutableMapOf(
             "Integer" to IntegerType,
-            "String" to StringType,
-            "Boolean" to BooleanType,
-            "True" to CarbonBoolean(true),
-            "False" to CarbonBoolean(false)
+            "String" to StringType
     )
+
+    init {
+        // Probably a better way to iterate here
+        File("stdlib").walkTopDown().filter { file -> file.extension == "cbn" }
+                .forEach { file ->
+            compileExpression(CharStreams.fromPath(file.toPath()), this)
+        }
+    }
 
     override fun getMember(name: String): CarbonExpression? = members[name]
 

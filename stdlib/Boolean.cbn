@@ -1,0 +1,6 @@
+
+Boolean = | True | False
+
+// Make sure these are accessible at the global scope
+True = Boolean.True
+False = Boolean.False
