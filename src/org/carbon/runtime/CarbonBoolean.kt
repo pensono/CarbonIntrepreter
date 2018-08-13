@@ -11,7 +11,8 @@ class CarbonBoolean(value: Boolean) : CarbonPrimitive<Boolean>(value, {expr -> g
 }
 
 private fun generateOperators(expr: CarbonBoolean) = mapOf(
-        "&&" to booleanMagma(expr, "&&", Boolean::and) // Is there a way to remove the cast?
+        "&&" to booleanMagma(expr, "&&", Boolean::and),
+        "||" to booleanMagma(expr, "&&", Boolean::or) // xor?
 )
 
 private fun booleanMagma(base: CarbonBoolean, opName: String, operation: (Boolean, Boolean) -> Boolean) =

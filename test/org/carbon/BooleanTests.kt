@@ -32,4 +32,12 @@ class BooleanTests {
         exprTest("False && True", CarbonBoolean(false))
         exprTest("True && True", CarbonBoolean(true))
     }
+
+    @Test
+    fun or() {
+        exprTest("False || False", CarbonBoolean(false))
+        exprTest("True || False", CarbonBoolean(true))
+        exprTest("False || True", CarbonBoolean(true))
+        exprTest("True || True", CarbonBoolean(true))
+    }
 }
