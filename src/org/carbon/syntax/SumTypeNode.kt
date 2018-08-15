@@ -1,17 +1,14 @@
 package org.carbon.syntax
 
-import org.carbon.runtime.CarbonBoolean
-import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonScope
-import org.carbon.runtime.OperatorExpression
+import org.carbon.runtime.*
 
 class SumTypeNode(val options: Map<String, Node?>) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression {
         val linkedOptions = options.mapValues { option ->
-            option.value?.link(scope) ?: CarbonExpression(memberCallback = ::simpleOptionMembers) // Blank expression for enum options with no content. (Like True)
+            option.value?.link(scope) ?: CarbonExpression(CarbonType, memberCallback = ::simpleOptionMembers) // Blank expression for enum options with no content. (Like True)
         }
 
-        return CarbonExpression(actualParameters = linkedOptions)
+        return CarbonExpression(CarbonType, actualParameters = linkedOptions)
     }
 
     override fun getShortString(): String = "Sum Type Node. Options:"
@@ -19,7 +16,7 @@ class SumTypeNode(val options: Map<String, Node?>) : Node() {
 }
 
 private fun simpleOptionMembers(expr: CarbonExpression) = mapOf(
-        "==" to OperatorExpression(expr, "==") { rhs, lhs ->
+        "==" to OperatorExpression(expr, "==", RandomType) { rhs, lhs ->
             CarbonBoolean(rhs == lhs)
         }
 )

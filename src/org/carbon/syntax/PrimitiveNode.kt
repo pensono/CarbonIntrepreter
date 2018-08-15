@@ -3,9 +3,11 @@ package org.carbon.syntax
 import org.carbon.runtime.CarbonExpression
 import org.carbon.runtime.CarbonScope
 
-abstract class PrimitiveNode<T:Any>(val value: T, val operators: (CarbonExpression) -> Map<String, CarbonExpression>) : Node() {
+abstract class PrimitiveNode<T:Any>(val value: T, val type: CarbonExpression, val operators: (CarbonExpression) -> Map<String, CarbonExpression>) : Node() {
     override fun link(scope: CarbonScope): CarbonExpression = toExpr()
-    fun toExpr() = CarbonExpression(body = this, memberCallback = operators)
+    fun toExpr() = CarbonExpression(type, body = this, memberCallback = operators)
+
+    //override fun inferredType(scope: CarbonScope): CarbonExpression = type
 
     override fun getShortString(): String = "${this.javaClass.simpleName}($value)"
 

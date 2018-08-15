@@ -1,21 +1,31 @@
 package org.carbon.syntax
 
+import org.carbon.CarbonTypeException
 import org.carbon.runtime.CarbonExpression
 import org.carbon.runtime.CarbonRegister
 import org.carbon.runtime.CarbonScope
+import org.carbon.runtime.RandomType
 
 /**
  * @author Ethan
  */
 // Is this enum necessary? Maybe subclasses would be a better solution
-class Statement(val name: String, val body: Node, val formalParameters: List<String>, val isRegister: Boolean) : Node() {
+class Statement(val isRegister: Boolean, val name: String, val formalParameters: List<Pair<String, Node>>, val declaredType: Node?, val body: Node) : Node() {
     override fun getShortString(): String = "Statement $name(${formalParameters.joinToString(",")}). Body:"
     override fun getBodyString(level: Int): String = body.getBodyString(level + 1)
 
     override fun link(scope: CarbonScope) : CarbonExpression {
-        val body = CarbonExpression(scope, body, formalParameters = formalParameters)
+        val linkedFormalParameters = formalParameters.map { pair -> pair.first } // Correct scope? No idea. Might have to capture the scope in the formal parameter itself.
+
+        val body = CarbonExpression(RandomType, scope, body, formalParameters = linkedFormalParameters)
+
+        val declaredTypeExpr = declaredType?.link(scope)
+        if (declaredTypeExpr != null && body.type.isSubtype(declaredTypeExpr)) {
+            throw CarbonTypeException("$body is not a subtype of $declaredTypeExpr")
+        }
+
         return if (isRegister) {
-             CarbonRegister(body.eval()) // This eval may be too early
+             CarbonRegister(body.eval(), RandomType) // This eval may be too early. Also is it correct to pass the declaredType in twice?
         } else {
             body
         }

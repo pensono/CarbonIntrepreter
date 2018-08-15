@@ -1,6 +1,6 @@
 package org.carbon.runtime
 
-abstract class CarbonMonad() : CarbonExpression(memberCallback = ::monadOperators) {
+abstract class CarbonMonad() : CarbonExpression(MonadType, memberCallback = ::monadOperators) {
     abstract fun execute()
 }
 
@@ -19,5 +19,7 @@ class AssignmentMonad(val lhs: CarbonRegister, val rhs: CarbonExpression) : Carb
 }
 
 fun monadOperators(expr: CarbonExpression): Map<String, CarbonExpression> = mapOf(
-        ";" to OperatorExpression(expr, "bind") { lhs, rhs -> CompositeMonad(lhs as CarbonMonad, rhs as CarbonMonad)}
+        ";" to OperatorExpression(expr, "bind", magmaType(MonadType)) { lhs, rhs -> CompositeMonad(lhs as CarbonMonad, rhs as CarbonMonad)}
 )
+
+object MonadType : CarbonExpression(CarbonType)

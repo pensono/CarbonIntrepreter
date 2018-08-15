@@ -5,9 +5,11 @@ import java.util.*
 /**
  * @author Ethan
  */
-open class CarbonPrimitive<T>(var value: T,
-                           operatorCallback: (CarbonExpression) -> Map<String, CarbonExpression>
-    ) : CarbonExpression(memberCallback = operatorCallback) {
+open class CarbonPrimitive<T>(
+        type: CarbonExpression,
+        var value: T,
+        operatorCallback: (CarbonExpression) -> Map<String, CarbonExpression>
+    ) : CarbonExpression(type, memberCallback = operatorCallback) {
 
     // Can this override be removed?
     override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {

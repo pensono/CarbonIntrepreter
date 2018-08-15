@@ -121,25 +121,27 @@ class NodeVisitor(val lexicalScope: CarbonScope) : CarbonParserBaseVisitor<Node>
     }
 
     override fun visitStatement(ctx: CarbonParser.StatementContext): Statement {
-        var body = NodeVisitor(lexicalScope).visit(ctx.body)
+        val isReg = ctx.isReg != null
+
+        val declaredType = ctx.variable_declaration().type()?.accept(this)
+
+        var body = ctx.body.accept(this)
 
         // Wrap body in BranchNodes for each guard (if any)
         for (guard in ctx.guards.reversed()) {
-            val predicate = NodeVisitor(lexicalScope).visit(guard.predicate)
-            val branchBody = NodeVisitor(lexicalScope).visit(guard.body)
+            val predicate = guard.predicate.accept(this)
+            val branchBody = guard.body.accept(this)
 
             body = BranchNode(predicate, branchBody, body)
         }
 
         val parameterNames = if (ctx.hasParameterList != null) {
-            toParameterList(lexicalScope, ctx.parameters!!).map { p -> p.first} // Ignore the types for now
+            toParameterList(lexicalScope, ctx.parameters!!) // Ignore the types for now
         } else {
             listOf()
         }
 
-        val isReg = ctx.isReg != null
-
-        return Statement(ctx.variable_declaration().text, body, parameterNames, isReg)
+        return Statement(isReg, ctx.variable_declaration().LABEL().text, parameterNames, declaredType, body)
     }
 }
 

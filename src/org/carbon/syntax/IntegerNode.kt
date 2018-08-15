@@ -1,14 +1,12 @@
 package org.carbon.syntax
 
-import org.carbon.runtime.CarbonBoolean
-import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.WrappedOperatorExpression
+import org.carbon.runtime.*
 
 /**
  * @author Ethan Shea
  * @date 6/13/2018
  */
-class IntegerNode(value: Int) : PrimitiveNode<Int>(value ,::integerOperators)
+class IntegerNode(value: Int) : PrimitiveNode<Int>(value, IntegerType, ::integerOperators)
 
 private fun integerOperators(expr: CarbonExpression) = mapOf(
         "+" to integerMagma(expr, "+", Int::plus),
@@ -22,9 +20,9 @@ private fun integerOperators(expr: CarbonExpression) = mapOf(
 )
 
 private fun integerMagma(base: CarbonExpression, opName: String, operation: (Int, Int) -> Int) =
-        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapInteger)
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapInteger, magmaType(IntegerType))
 
 private fun integerRelation(base: CarbonExpression, opName: String, operation: (Int, Int) -> Boolean) =
-        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, ::CarbonBoolean)
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, ::CarbonBoolean, FunctionType(listOf(IntegerType, IntegerType), BooleanType))
 
 val wrapInteger = wrapPrimitive(::IntegerNode)

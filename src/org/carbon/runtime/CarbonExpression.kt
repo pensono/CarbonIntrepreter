@@ -9,14 +9,16 @@ import org.carbon.syntax.Node
  * @author Ethan
  */
 open class CarbonExpression(
-        val lexicalScope: CarbonScope? = null, // Should this be required?
-        var body: Node? = null, // Not sure if this is the best type, but we'll stick with it for now
+        type_: CarbonExpression?, // Should this be required? I'm starting to think no, but I'll finish the type system before making a determination
+        val lexicalScope: CarbonScope? = null, // Not sure if this is the best declaredType, but we'll stick with it for now
+        var body: Node? = null, // Should be non-nullable
         val derivedMembers: Map<String, CarbonExpression> = mapOf(),
         val actualParameters: Map<String, CarbonExpression> = mapOf(),
-        val formalParameters: List<String> = listOf<String>(),
+        val formalParameters: List<String> = listOf(), // We don't need the types here because typechecking has already occurred.
         memberCallback: (CarbonExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
     ) : PrettyPrintable, CarbonScope() {
 
+    val type = type_ ?: this // Sad hack because CarbonType can't pass itself in as it's own declaredType
     val members = actualParameters + memberCallback(this)
 
     // I don't think link should happen here
@@ -35,10 +37,10 @@ open class CarbonExpression(
         val newFormalParameters = nameMapping.filter { p -> p.second == null }
                 .map { p -> p.first }
         val newMembers = nameMapping.toMap().filterValues { n -> n != null }
-                .mapValues { e -> e.value as CarbonExpression } + members // Cast needed to get the type system to recognize that nulls were filtered out.
+                .mapValues { e -> e.value as CarbonExpression } + members // Cast needed to get the declaredType system to recognize that nulls were filtered out.
 
         // Eval when no formal parameters?
-        return CarbonExpression(lexicalScope, body, derivedMembers, newMembers, newFormalParameters)
+        return CarbonExpression(type, lexicalScope, body, derivedMembers, newMembers, newFormalParameters)
     }
 
     open fun eval() : CarbonExpression =
@@ -51,6 +53,8 @@ open class CarbonExpression(
     // TODO check for collisions between actualParameters and derivedMembers, or assert that keys are unique
     override fun lookupName(name: String): CarbonExpression? =
             getMember(name) ?: lexicalScope?.lookupName(name)
+
+    open fun isSubtype(expr: CarbonExpression) = expr == this
 
     override fun getShortString(): String = "Carbon Expression"
     override fun getBodyString(level: Int): String =

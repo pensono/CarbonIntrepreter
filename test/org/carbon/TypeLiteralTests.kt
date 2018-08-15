@@ -32,7 +32,7 @@ class TypeLiteralTests {
         """, "R", wrapInteger(3))
     }
 
-    // TODO test squash between Integer and an arbitrary type
+    // TODO test squash between Integer and an arbitrary declaredType
 
     @Test
     fun applicationSingleArg() {

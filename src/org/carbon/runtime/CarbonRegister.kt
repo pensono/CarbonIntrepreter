@@ -4,7 +4,7 @@ import org.carbon.indented
 
 
 // Does this make sense as a subclass?
-class CarbonRegister(initialValue: CarbonExpression) : CarbonExpression(body = initialValue.body, memberCallback = ::registerOperations) {
+class CarbonRegister(initialValue: CarbonExpression, type: CarbonExpression) : CarbonExpression(type, body = initialValue.body, memberCallback = ::registerOperations) {
     var value = initialValue
 
     fun update(newValue: CarbonExpression) {
@@ -24,5 +24,5 @@ class CarbonRegister(initialValue: CarbonExpression) : CarbonExpression(body = i
 }
 
 private fun registerOperations(expr: CarbonExpression) = mapOf(
-        ":=" to OperatorExpression(expr, "assignment") { lhs, rhs -> AssignmentMonad(lhs as CarbonRegister, rhs)}
+        ":=" to OperatorExpression(expr, "assignment", MonadType) { lhs, rhs -> AssignmentMonad(lhs as CarbonRegister, rhs)}
 )

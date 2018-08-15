@@ -1,15 +1,13 @@
 package org.carbon.syntax
 
 import org.carbon.fullString
-import org.carbon.runtime.CarbonExpression
-import org.carbon.runtime.CarbonScope
-import org.carbon.runtime.OperatorExpression
+import org.carbon.runtime.*
 
 /**
  * @author Ethan
  */
 class ArbitraryTypeNode(
-        private val instanceMembers: List<Pair<String, Node>>, // Name to type
+        private val instanceMembers: List<Pair<String, Node>>, // Name to declaredType
         private val derivedMembers: List<Statement>
     ) : Node() {
 
@@ -17,9 +15,10 @@ class ArbitraryTypeNode(
         // Is this scope correct?
         val parameterNames = instanceMembers.map { p -> p.first }
 
-        return CarbonExpression(scope, ArbitraryInstanceNode(instanceMembers, derivedMembers), formalParameters = parameterNames, memberCallback = { expr ->
-            mapOf(":" to OperatorExpression(expr, "squash") { lhs, rhs ->
+        return CarbonExpression(RandomType, scope, ArbitraryInstanceNode(instanceMembers, derivedMembers), formalParameters = parameterNames, memberCallback = { expr ->
+            mapOf(":" to OperatorExpression(expr, "squash", type = RandomType) { lhs, rhs ->
                 CarbonExpression(
+                        RandomType,
                         scope,
                         null, // What should body be?
                         lhs.derivedMembers + rhs.derivedMembers,
