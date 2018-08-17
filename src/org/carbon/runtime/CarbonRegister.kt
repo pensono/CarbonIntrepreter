@@ -23,6 +23,6 @@ class CarbonRegister(initialValue: CarbonExpression, type: CarbonExpression) : C
     override fun hashCode(): Int = value.hashCode() xor 0xCB1337
 }
 
-private fun registerOperations(expr: CarbonExpression) = mapOf(
-        ":=" to OperatorExpression(expr, "assignment", MonadType) { lhs, rhs -> AssignmentMonad(lhs as CarbonRegister, rhs)}
+private fun registerOperations(expr: CarbonExpression) = mapOf( // CarbonType here should actually be a polymorphic type A in A -> Monad
+        ":=" to OperatorExpression(expr, "assignment", CarbonType, MonadType) { lhs, rhs -> AssignmentMonad(lhs as CarbonRegister, rhs)}
 )

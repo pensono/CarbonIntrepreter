@@ -19,7 +19,7 @@ class AssignmentMonad(val lhs: CarbonRegister, val rhs: CarbonExpression) : Carb
 }
 
 fun monadOperators(expr: CarbonExpression): Map<String, CarbonExpression> = mapOf(
-        ";" to OperatorExpression(expr, "bind", magmaType(MonadType)) { lhs, rhs -> CompositeMonad(lhs as CarbonMonad, rhs as CarbonMonad)}
+        ";" to OperatorExpression(expr, "bind", MonadType, MonadType) { lhs, rhs -> CompositeMonad(lhs as CarbonMonad, rhs as CarbonMonad)}
 )
 
 object MonadType : CarbonExpression(CarbonType)

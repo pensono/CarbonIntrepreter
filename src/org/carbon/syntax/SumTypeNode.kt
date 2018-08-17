@@ -11,12 +11,16 @@ class SumTypeNode(val options: Map<String, Node?>) : Node() {
         return CarbonExpression(CarbonType, actualParameters = linkedOptions)
     }
 
+    override fun linkType(scope: CarbonScope): CarbonExpression {
+        return link(scope)
+    }
+
     override fun getShortString(): String = "Sum Type Node. Options:"
     //override fun getBodyString(level: Int): String = fullString(level + 1, options)
 }
 
 private fun simpleOptionMembers(expr: CarbonExpression) = mapOf(
-        "==" to OperatorExpression(expr, "==", RandomType) { rhs, lhs ->
+        "==" to OperatorExpression(expr, "==", RandomType, BooleanType) { rhs, lhs ->
             CarbonBoolean(rhs == lhs)
         }
 )

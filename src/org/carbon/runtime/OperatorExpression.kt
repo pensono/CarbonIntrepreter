@@ -13,8 +13,9 @@ class WrappedOperatorExpression<out CET: CarbonExpression, out CER: CarbonExpres
         private val operator: (T, T) -> R,
         private val unwrapper: (CET) -> T,
         private val wrapper: (R) -> CER,
-        type: CarbonExpression
-    ) : CarbonExpression(type, formalParameters = listOf("lhs")) {
+        argumentType: CarbonExpression,
+        returnType: CarbonExpression
+    ) : CarbonExpression(returnType, formalParameters = listOf("lhs" to argumentType)) {
 
     override fun apply(arguments: List<CarbonExpression?>): CER {
         assert(arguments.size == 1)
@@ -33,9 +34,10 @@ class WrappedOperatorExpression<out CET: CarbonExpression, out CER: CarbonExpres
 class OperatorExpression(
         val base: CarbonExpression,
         val operatorName: String,
-        type: CarbonExpression,
+        argumentType: CarbonExpression,
+        returnType: CarbonExpression,
         private val operator: (CarbonExpression, CarbonExpression) -> CarbonExpression
-) : CarbonExpression(type, formalParameters = listOf("lhs")) {
+) : CarbonExpression(returnType, formalParameters = listOf("lhs" to argumentType)) {
 
     override fun apply(arguments: List<CarbonExpression?>): CarbonExpression {
         assert(arguments.size == 1)

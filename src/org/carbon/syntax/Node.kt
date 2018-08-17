@@ -10,7 +10,7 @@ import org.carbon.runtime.CarbonScope
  */
 abstract class Node: PrettyPrintable {
     abstract fun link(scope: CarbonScope): CarbonExpression
-    //open fun inferredType(scope: CarbonScope): CarbonExpression = link(scope).type // Seems to be a good default. Little weird though because it means that the linking is done twice
+    open fun linkType(scope: CarbonScope): CarbonExpression = link(scope).type // Seems to be a good default. Little weird though because it means that the linking is done twice
 
     override fun toString() = getFullString()
 }

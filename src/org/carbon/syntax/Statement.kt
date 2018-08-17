@@ -15,12 +15,12 @@ class Statement(val isRegister: Boolean, val name: String, val formalParameters:
     override fun getBodyString(level: Int): String = body.getBodyString(level + 1)
 
     override fun link(scope: CarbonScope) : CarbonExpression {
-        val linkedFormalParameters = formalParameters.map { pair -> pair.first } // Correct scope? No idea. Might have to capture the scope in the formal parameter itself.
+        val linkedFormalParameters = formalParameters.map { pair -> pair.first to pair.second.link(scope) } // Correct scope? No idea. Might have to capture the scope in the formal parameter itself.
 
         val body = CarbonExpression(RandomType, scope, body, formalParameters = linkedFormalParameters)
 
         val declaredTypeExpr = declaredType?.link(scope)
-        if (declaredTypeExpr != null && body.type.isSubtype(declaredTypeExpr)) {
+        if (declaredTypeExpr != null && body.type.subtypeOf(declaredTypeExpr)) {
             throw CarbonTypeException("$body is not a subtype of $declaredTypeExpr")
         }
 

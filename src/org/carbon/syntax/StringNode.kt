@@ -3,7 +3,6 @@ package org.carbon.syntax
 import org.carbon.runtime.CarbonExpression
 import org.carbon.runtime.StringType
 import org.carbon.runtime.WrappedOperatorExpression
-import org.carbon.runtime.magmaType
 
 /**
  * @author Ethan Shea
@@ -16,6 +15,6 @@ private fun stringOperators(expr: CarbonExpression) = mapOf(
 )
 
 private fun stringMagma(base: CarbonExpression, opName: String, operation: (String, String) -> String) =
-        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapString, magmaType(StringType))
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapString, StringType, StringType)
 
 val wrapString = wrapPrimitive(::StringNode)

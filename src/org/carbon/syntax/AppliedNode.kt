@@ -1,6 +1,7 @@
 package org.carbon.syntax
 
 import org.antlr.v4.runtime.misc.Interval
+import org.carbon.CarbonTypeException
 import org.carbon.fullString
 import org.carbon.indented
 import org.carbon.runtime.CarbonExpression
@@ -15,7 +16,17 @@ class AppliedNode(private val location: Interval, private val base: Node, privat
         val baseExpr = base.link(scope)
         val evaluatedParameters = actualParameters.map { n -> n?.link(scope) }
 
-        return baseExpr.apply(evaluatedParameters).eval()
+        if (baseExpr.formalParameters.size != actualParameters.size) {
+            throw CarbonTypeException("Incorrect number of parameters to $base")
+        } else {
+            for (pair in evaluatedParameters.zip(baseExpr.formalTypes)) {
+                if (pair.first != null && !pair.first!!.type.subtypeOf(pair.second)) {
+                    throw CarbonTypeException("${pair.first} is not a subtype of ${pair.second}!", location)
+                }
+            }
+        }
+
+        return baseExpr.apply(evaluatedParameters).eval() // TODO get rid of this eval
     }
 
     override fun getShortString(): String = "Applied Node."

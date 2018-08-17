@@ -13,10 +13,10 @@ class ArbitraryTypeNode(
 
     override fun link(scope: CarbonScope): CarbonExpression {
         // Is this scope correct?
-        val parameterNames = instanceMembers.map { p -> p.first }
+        val parameterNames = instanceMembers.map { p -> p.first to p.second.link(scope) }
 
         return CarbonExpression(RandomType, scope, ArbitraryInstanceNode(instanceMembers, derivedMembers), formalParameters = parameterNames, memberCallback = { expr ->
-            mapOf(":" to OperatorExpression(expr, "squash", type = RandomType) { lhs, rhs ->
+            mapOf(":" to OperatorExpression(expr, "squash", RandomType, RandomType) { lhs, rhs ->
                 CarbonExpression(
                         RandomType,
                         scope,

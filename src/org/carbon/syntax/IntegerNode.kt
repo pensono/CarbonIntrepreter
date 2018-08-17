@@ -20,9 +20,9 @@ private fun integerOperators(expr: CarbonExpression) = mapOf(
 )
 
 private fun integerMagma(base: CarbonExpression, opName: String, operation: (Int, Int) -> Int) =
-        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapInteger, magmaType(IntegerType))
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, wrapInteger, IntegerType, IntegerType)
 
 private fun integerRelation(base: CarbonExpression, opName: String, operation: (Int, Int) -> Boolean) =
-        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, ::CarbonBoolean, FunctionType(listOf(IntegerType, IntegerType), BooleanType))
+        WrappedOperatorExpression(base, opName, operation, ::unwrapPrimitive, ::CarbonBoolean, IntegerType, BooleanType)
 
 val wrapInteger = wrapPrimitive(::IntegerNode)

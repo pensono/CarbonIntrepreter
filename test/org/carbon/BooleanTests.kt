@@ -15,15 +15,15 @@ class BooleanTests {
         exprTest("False", CarbonBoolean(false))
     }
 
-    @Test
-    fun expression() {
-        exprTest("Boolean(True)", CarbonBoolean(true))
-        exprTest("Boolean(False)", CarbonBoolean(false))
-        envTest("""
-            S = True
-            R = Boolean(S)
-        """, "R", CarbonBoolean(true))
-    }
+//    @Test // I kinda don't want to support this anymore..
+//    fun expression() {
+//        exprTest("Boolean(True)", CarbonBoolean(true))
+//        exprTest("Boolean(False)", CarbonBoolean(false))
+//        envTest("""
+//            S = True
+//            R = Boolean(S)
+//        """, "R", CarbonBoolean(true))
+//    }
 
     @Test
     fun and() {

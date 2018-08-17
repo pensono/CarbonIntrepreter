@@ -36,14 +36,14 @@ class StringTests {
         exprTest("\"Hola\"", wrapString("Hola"))
     }
 
-    @Test
-    fun expression() {
-        exprTest("String(\"text\")", wrapString("text"))
-        envTest("""
-            S = "test"
-            R = String(S)
-        """, "R", wrapString("test"))
-    }
+//    @Test // Not sure if I want to support this
+//    fun expression() {
+//        exprTest("String(\"text\")", wrapString("text"))
+//        envTest("""
+//            S = "test"
+//            R = String(S)
+//        """, "R", wrapString("test"))
+//    }
 
     @Test
     fun infixOperators() {

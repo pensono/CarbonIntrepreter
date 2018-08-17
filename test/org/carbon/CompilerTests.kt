@@ -42,7 +42,7 @@ class CompilerTests {
     @Test
     fun dotsOnBothSides() {
         envTest("""
-            T = { Member = {Integer = 1}() }
+            T = { Member = {Integer = 1} }
             A = T()
             B = T()
             R = A.Member.Integer + B.Member.Integer
@@ -57,9 +57,9 @@ class CompilerTests {
                 C = E,
                 B = {
                     D = C,
-                }()
+                }
             }
-            R = A().B.D
+            R = A.B.D
         """, "R", wrapInteger(5))
     }
 

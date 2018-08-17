@@ -21,7 +21,7 @@ class EnumerationTests {
     }
 
     @Test
-    fun complexEnum() {
+    fun recursiveEnum() {
         envTest("""
             Tree = | Leaf
                    | Stem = { Left: Tree, Right: Tree }

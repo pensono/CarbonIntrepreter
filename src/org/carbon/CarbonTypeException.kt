@@ -1,3 +1,5 @@
 package org.carbon
 
-class CarbonTypeException(message: String) : CarbonException(message)
+import org.antlr.v4.runtime.misc.Interval
+
+class CarbonTypeException(message: String, location : Interval? = null) : CarbonException(message, location)

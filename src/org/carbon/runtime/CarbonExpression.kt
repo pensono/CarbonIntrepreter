@@ -7,18 +7,19 @@ import org.carbon.syntax.Node
 
 /**
  * @author Ethan
- */
+ */ // TODO clean up the IR from these arguments
 open class CarbonExpression(
         type_: CarbonExpression?, // Should this be required? I'm starting to think no, but I'll finish the type system before making a determination
         val lexicalScope: CarbonScope? = null, // Not sure if this is the best declaredType, but we'll stick with it for now
         var body: Node? = null, // Should be non-nullable
         val derivedMembers: Map<String, CarbonExpression> = mapOf(),
         val actualParameters: Map<String, CarbonExpression> = mapOf(),
-        val formalParameters: List<String> = listOf(), // We don't need the types here because typechecking has already occurred.
+        val formalParameters: List<Pair<String, CarbonExpression>> = listOf(), // name to type
         memberCallback: (CarbonExpression) -> Map<String, CarbonExpression> = { _ -> mapOf() }
     ) : PrettyPrintable, CarbonScope() {
 
     val type = type_ ?: this // Sad hack because CarbonType can't pass itself in as it's own declaredType
+    val formalTypes = formalParameters.map {p -> p.second}
     val members = actualParameters + memberCallback(this)
 
     // I don't think link should happen here
@@ -37,7 +38,7 @@ open class CarbonExpression(
         val newFormalParameters = nameMapping.filter { p -> p.second == null }
                 .map { p -> p.first }
         val newMembers = nameMapping.toMap().filterValues { n -> n != null }
-                .mapValues { e -> e.value as CarbonExpression } + members // Cast needed to get the declaredType system to recognize that nulls were filtered out.
+                .map { e -> e.key.first to e.value!! }.toMap() + members
 
         // Eval when no formal parameters?
         return CarbonExpression(type, lexicalScope, body, derivedMembers, newMembers, newFormalParameters)
@@ -54,7 +55,7 @@ open class CarbonExpression(
     override fun lookupName(name: String): CarbonExpression? =
             getMember(name) ?: lexicalScope?.lookupName(name)
 
-    open fun isSubtype(expr: CarbonExpression) = expr == this
+    open fun subtypeOf(expr: CarbonExpression) = expr == this
 
     override fun getShortString(): String = "Carbon Expression"
     override fun getBodyString(level: Int): String =

@@ -16,7 +16,7 @@ private fun generateOperators(expr: CarbonBoolean) = mapOf(
 )
 
 private fun booleanMagma(base: CarbonBoolean, opName: String, operation: (Boolean, Boolean) -> Boolean) =
-        WrappedOperatorExpression(base, opName, operation, CarbonBoolean::value, ::CarbonBoolean, magmaType(BooleanType))
+        WrappedOperatorExpression(base, opName, operation, CarbonBoolean::value, ::CarbonBoolean, BooleanType, BooleanType)
 
 object BooleanType : CarbonExpression(CarbonType) {
     override fun getShortString(): String = "Boolean Type"

@@ -15,7 +15,17 @@ class TypeSystemTests {
 
     @Test(expected = CarbonTypeException::class)
     fun basicAssignmentInt() {
-        testEnvEval("R: String = 4", "R")
+        testEnvEval("R: Integer = \"lol\"", "R")
+    }
+
+    @Test(expected = CarbonTypeException::class)
+    fun fromAppliedExpression() {
+        testEnvEval("R: String = 4 + 2", "R")
+    }
+
+    @Test(expected = CarbonTypeException::class)
+    fun inAppliedExpression() {
+        testEnvEval("R = 4 + \"lol\"", "R")
     }
 
     // TODO Test basic assignment user defined types

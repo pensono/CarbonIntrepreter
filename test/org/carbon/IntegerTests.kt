@@ -21,14 +21,15 @@ class IntegerTests {
         // TODO Decimal numbers
     }
 
-    @Test
-    fun expression() {
-        exprTest("Integer(1)", wrapInteger(1))
-        envTest("""
-            I = 3
-            R = Integer(I)
-        """, "R", wrapInteger(3))
-    }
+    // Not sure I want to support this
+//    @Test
+//    fun expression() {
+//        exprTest("Integer(1)", wrapInteger(1))
+//        envTest("""
+//            I = 3
+//            R = Integer(I)
+//        """, "R", wrapInteger(3))
+//    }
 
 
     @Test
